@@ -111,7 +111,7 @@ class OTECopyRequest(BaseModel):
 
 class OTECopyResponse(BaseModel):
     asset_type: AssetType
-    copy: Dict[str, Any]
+    content: Dict[str, Any]
     warnings: List[str]
     slippery_score: float
 
@@ -435,7 +435,7 @@ async def generate(req: OTECopyRequest):
 
     return OTECopyResponse(
         asset_type=req.asset_type,
-        copy=copy_obj,
+        content=copy_obj,
         warnings=warnings,
         slippery_score=slippery_score(flat_text),
     )
