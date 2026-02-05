@@ -6,10 +6,11 @@
 - Add/adjust tests when behavior changes.
 
 ## How to run locally
-- Install: `npm install`
-- Start dev server: `npm run dev`
-- Run tests: `npm test`
-- Lint/format: `npm run lint` / `npm run format:check`
+- Install: `pip install -r requirements.txt`
+- Start dev server: `uvicorn main:app --reload`
+- Run tests: `pytest`
+- Lint/format: `ruff check .` / `ruff format --check .`
+- Quick CLI test: `python main.py`
 
 ## Code conventions
 - Follow existing patterns in the repo.
