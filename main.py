@@ -23,37 +23,42 @@ AssetType = Literal[
 # ----------------------------
 DEFAULT_BRAND_PROFILE: Dict[str, Any] = {
     "brand_name": "On Time Edge",
-    "tagline": "Advanced planning & scheduling for operations teams",
+    "tagline": "Navigate transformation and drive sustainable business value for manufacturing operations",
+    "identity": (
+        "On Time Edge is a vendor-agnostic manufacturing digital transformation consulting "
+        "and implementation firm—not a software product. They help manufacturers select, "
+        "implement, integrate, and optimize APS, MES, OEE, and supply chain systems."
+    ),
     "voice": [
         "Plainspoken, ops-smart, confident",
-        "Specific over hype",
+        "Specific over hype—use operational language (constraints, throughput, lead time), not buzzwords",
         "Direct-response structure without gimmicks",
-        "Respect skeptical buyers",
+        "Respect skeptical buyers—they've heard every vendor pitch",
+        "Consultative, not salesy—trusted advisor, not product pusher",
     ],
     "audience": [
-        "Manufacturing and supply chain leaders",
-        "Schedulers, planners, operations teams",
+        "Manufacturing and supply chain executives",
+        "Plant schedulers, planners, and operations leaders",
         "RevOps / IT stakeholders supporting operational systems",
+        "Industries: aerospace, automotive, CPG, food & beverage, medical device, metals, pharma, plastics",
     ],
     "positioning": [
-        "Make planning and scheduling easier to execute",
-        "Turn constraints into an actionable plan",
-        "Help teams align daily decisions with operational goals",
+        "Vendor-agnostic: pick the right tool for each client, not push one platform",
+        "30+ years of APS implementation specialization, 1000+ site implementations across 300+ global companies",
+        "90-day time-to-first-value implementation targets",
+        "MDIF (Manufacturing Digital Interoperability Framework): proprietary methodology from strategy through execution",
+        "Post-implementation partnership—not a build-and-walk-away consultancy",
+        "Turn constraints into an actionable plan teams can execute",
     ],
     "do_not_say": [
-        "IED-Net",  # per your preference
+        "IED-Net",
     ],
     "safe_words": [
-        # Use these only when supported by inputs; included as vocabulary hints, not claims:
-        "schedule",
-        "constraints",
-        "capacity",
-        "throughput",
-        "lead time",
-        "service levels",
-        "planning",
-        "execution",
-        "variability",
+        # Use only when supported by inputs; vocabulary hints, not claims:
+        "schedule", "constraints", "capacity", "throughput", "lead time",
+        "service levels", "planning", "execution", "variability",
+        "digital transformation", "interoperability", "vendor-agnostic",
+        "time-to-value", "integration", "MES", "OEE", "ERP", "what-if",
     ],
 }
 
@@ -118,23 +123,82 @@ class OTECopyResponse(BaseModel):
 # ----------------------------
 # Slippery-slide heuristic score
 # ----------------------------
+# Inspired by Sugarman's principles: short opener, rhythm variation
+# (short-medium-long-short), seeds of curiosity, and compression.
+
+CURIOSITY_SEEDS = re.compile(
+    r"(but (there's|here's)|let me explain|here's (the|why)|now here comes|read on|"
+    r"and yet|truth is|turns out|look,|here's the thing|so,|you see)",
+    re.I,
+)
+
 def _sentences(text: str) -> List[str]:
     s = re.split(r'(?<=[.!?])\s+', text.strip())
     return [x.strip() for x in s if x.strip()]
 
+def _word_count(s: str) -> int:
+    return len(re.findall(r"\w+", s))
+
 def slippery_score(text: str) -> float:
+    """
+    Score 0-100 estimating how well copy follows the slippery-slide pattern.
+
+    Five components (Sugarman-derived):
+    1. Short opener   — first sentence <=10 words (ideally <=5)
+    2. Rhythm variety  — adjacent sentences vary in length (not monotone)
+    3. Length sweet spot — average sentence length near 8-16 words
+    4. Compression      — penalize sentences >24 words; reward <=10
+    5. Curiosity seeds  — bucket-brigade transitions and open loops
+    """
     sents = _sentences(text)
     if not sents:
         return 0.0
-    lengths = [len(re.findall(r"\w+", s)) for s in sents]
-    avg_len = sum(lengths) / len(lengths)
-    long_penalty = sum(1 for L in lengths if L > 24) / len(lengths)
-    very_short_bonus = sum(1 for L in lengths if L <= 10) / len(lengths)
 
-    avg_component = max(0.0, 1.0 - abs(avg_len - 14) / 14)
-    mix_component = min(1.0, (very_short_bonus + (1.0 - long_penalty)) / 2.0)
-    score = 100.0 * (0.6 * avg_component + 0.4 * mix_component)
-    return round(max(0.0, min(100.0, score)), 2)
+    lengths = [_word_count(s) for s in sents]
+    n = len(lengths)
+
+    # 1) Short opener (20 pts) — Sugarman: first sentence extremely short
+    first = lengths[0]
+    if first <= 5:
+        opener_score = 20.0
+    elif first <= 10:
+        opener_score = 14.0
+    elif first <= 16:
+        opener_score = 6.0
+    else:
+        opener_score = 0.0
+
+    # 2) Rhythm variety (25 pts) — adjacent sentences should differ in length
+    if n >= 2:
+        diffs = [abs(lengths[i] - lengths[i - 1]) for i in range(1, n)]
+        avg_diff = sum(diffs) / len(diffs)
+        # Target avg diff ~6 words between neighbors
+        rhythm_score = 25.0 * min(1.0, avg_diff / 6.0)
+    else:
+        rhythm_score = 12.5  # single sentence, neutral
+
+    # 3) Length sweet spot (20 pts) — average near 8-16 words
+    avg_len = sum(lengths) / n
+    if 8 <= avg_len <= 16:
+        avg_score = 20.0
+    elif avg_len < 8:
+        avg_score = 20.0 * max(0.0, avg_len / 8.0)
+    else:
+        avg_score = 20.0 * max(0.0, 1.0 - (avg_len - 16) / 16.0)
+
+    # 4) Compression (20 pts) — penalize long, reward short
+    long_ratio = sum(1 for L in lengths if L > 24) / n
+    short_ratio = sum(1 for L in lengths if L <= 10) / n
+    compress_score = 20.0 * min(1.0, (short_ratio + (1.0 - long_ratio)) / 2.0)
+
+    # 5) Curiosity seeds (15 pts) — bucket brigades and open loops
+    seed_count = len(CURIOSITY_SEEDS.findall(text))
+    # Reward up to ~1 seed per 4 sentences
+    target_seeds = max(1, n / 4)
+    curiosity_score = 15.0 * min(1.0, seed_count / target_seeds)
+
+    total = opener_score + rhythm_score + avg_score + compress_score + curiosity_score
+    return round(max(0.0, min(100.0, total)), 2)
 
 # ----------------------------
 # Guardrail / linting
@@ -179,14 +243,16 @@ def lint_copy(
 # Asset templates (no LLM)
 # ----------------------------
 def template_landing_hero(req: OTECopyRequest, brand: Dict[str, Any]) -> Dict[str, Any]:
-    headline = f"Make {req.primary_outcome} feel predictable."
+    # Sugarman: headline sells the concept/outcome, not the product
+    headline = f"Plans break. {req.primary_outcome.capitalize()} shouldn't."
+    # Sugarman: subhead adds one benefit + pulls into body
     subhead = (
-        f"{brand['brand_name']} helps {req.target_audience} turn constraints into a plan teams can actually run—"
-        f"without adding chaos to your day."
+        f"{brand['brand_name']} helps {req.target_audience} turn constraints "
+        f"into a plan teams can actually run. Without adding chaos to your day."
     )
     bullets = [b for b in req.key_benefits[:5]]
     proof = req.proof_points[:3]
-    proof_line = f"Proof you can point to: " + " • ".join(proof) if proof else ""
+    proof_line = " | ".join(proof) if proof else ""
     cta = req.cta
 
     return {
@@ -199,37 +265,65 @@ def template_landing_hero(req: OTECopyRequest, brand: Dict[str, Any]) -> Dict[st
     }
 
 def template_email_single(req: OTECopyRequest, brand: Dict[str, Any]) -> Dict[str, Any]:
-    subject = f"Quick idea for {req.target_audience}"
-    opening = "Let me guess—your plan looks good… right up until real life shows up."
+    # Sugarman: subject creates curiosity; opening is SHORT
+    subject = f"The real reason {req.target_audience} replan every week"
+    # Short opener (Sugarman: 2-7 words to pull them in)
+    opening = "Plans break. You know this."
+    # Bucket brigade + bridge (emotion first)
     bridge = (
-        f"{brand['brand_name']} is built to keep the schedule usable when constraints shift."
-        " The goal isn't a prettier plan. It's a plan your team can execute."
+        "The schedule looked solid Monday morning. By Wednesday, three things changed and "
+        "your team is back to firefighting.\n\n"
+        f"Here's the thing: {brand['brand_name']} is built for exactly that moment. "
+        "Not a prettier plan. A plan your team can keep running when constraints shift."
     )
+    # Benefits with a seed of curiosity
     benefits = "\n".join([f"- {b}" for b in req.key_benefits[:5]])
-    proof = "\n".join([f"- {p}" for p in req.proof_points[:4]]) if req.proof_points else ""
-    objections = req.objections[:2]
-    objection_block = ""
-    if objections:
-        objection_block = "You might be thinking:\n" + "\n".join([f"- {o}" for o in objections]) + "\n\nFair. That's why we keep it practical."
+    benefits_block = "Here's what that looks like in practice:\n" + benefits
 
-    close = f"If it's worth it, here's the next step:\n{req.cta}\n\n{req.offer_details}"
+    # Proof (only if available)
+    proof_block = ""
+    if req.proof_points:
+        proof_block = "And these aren't hypotheticals:\n" + "\n".join([f"- {p}" for p in req.proof_points[:4]])
+
+    # Sugarman: raise objections proactively, resolve honestly
+    objection_block = ""
+    if req.objections:
+        obj_lines = "\n".join([f'"{o}"' for o in req.objections[:2]])
+        objection_block = f"You might be thinking:\n{obj_lines}\n\nFair. That's exactly why we start with your real constraints, not a generic demo."
+
+    # Sugarman: close with clarity, restate benefit, frictionless CTA
+    close = f"If this is worth exploring, the next step is simple:\n{req.cta}\n\n{req.offer_details}"
+
+    parts = [opening, bridge, benefits_block]
+    if proof_block:
+        parts.append(proof_block)
+    if objection_block:
+        parts.append(objection_block)
+    parts.append(close)
+
     return {
         "subject": subject,
-        "body": "\n\n".join([opening, bridge, "Here's what that means in practice:", benefits, "A few real facts:", proof, objection_block, close]).strip(),
+        "body": "\n\n".join(parts).strip(),
     }
 
 def template_linkedin_post(req: OTECopyRequest, brand: Dict[str, Any]) -> Dict[str, Any]:
-    hook = "The schedule doesn't fail because your team is careless."
+    # Sugarman: short hook (pattern interrupt), then rhythm variation
+    hook = "Your schedule isn't the problem."
     body = (
-        "It fails because the world changes faster than your planning cycle.\n\n"
-        "So instead of chasing a perfect plan, build a plan your team can *keep using* when constraints shift.\n\n"
-        "A practical checklist:\n"
-        "• Identify the constraint that actually governs today\n"
-        "• Make tradeoffs explicit (capacity, lead time, service)\n"
-        "• Keep the next action obvious\n\n"
-        f"That's the problem {brand['brand_name']} is designed to help with—grounded in real operational constraints."
+        "The problem is what happens to it by Wednesday.\n\n"
+        "Constraints shift. Priorities change. And suddenly your team is replanning "
+        "instead of executing.\n\n"
+        "Truth is, chasing a perfect plan is a trap. What works is a plan your team "
+        "can *keep using* when reality shows up.\n\n"
+        "A quick litmus test:\n"
+        f"• Can you see today's binding constraint?\n"
+        f"• Are tradeoffs explicit (capacity vs. lead time vs. service)?\n"
+        f"• Is the next action obvious to the person doing the work?\n\n"
+        f"If not, that's the gap. And it's the exact problem "
+        f"{brand['brand_name']} helps {req.target_audience} close."
     )
-    cta = f"If you want, I can share a quick walkthrough. {req.cta}"
+    # Sugarman: CTA should be frictionless and clear
+    cta = f"Want a quick walkthrough? {req.cta}"
     return {"post": "\n\n".join([hook, body, cta]).strip()}
 
 def generate_template(req: OTECopyRequest, brand: Dict[str, Any]) -> Tuple[Dict[str, Any], str]:
@@ -260,83 +354,168 @@ def generate_template(req: OTECopyRequest, brand: Dict[str, Any]) -> Tuple[Dict[
 # LLM prompting
 # ----------------------------
 def build_system_prompt(brand: Dict[str, Any]) -> str:
-    # Strong constraints to keep it factual + brand-safe
+    identity = brand.get("identity", "")
+    voice = ", ".join(brand.get("voice", []))
+    do_not_say = ", ".join(brand.get("do_not_say", [])) or "(none)"
+
     return f"""
 You are a direct-response copywriter writing for {brand['brand_name']}.
-Voice: {", ".join(brand.get("voice", []))}
+{identity}
 
-Hard rules:
-- Use ONLY facts provided in the request fields (benefits/capabilities/proof/offer). Do NOT invent stats, customers, certifications, timelines, integrations, guarantees, or outcomes.
-- Do NOT use any banned terms from the brand profile.
-- Don't say competitors unless given.
-- Avoid hype / absolutes. Prefer specific operational language.
+Voice: {voice}
+Banned terms: {do_not_say}
 
-Structure guidance (Sugarman-inspired):
-- Make the reader keep reading: short lines, curiosity, one idea per sentence.
-- Lead with the concept/outcome, then explain mechanism/capabilities.
-- Address 1–3 objections.
-- Close with a clear CTA and risk reversal (only if provided).
+=== FACTUAL GUARDRAILS (non-negotiable) ===
+- Use ONLY facts provided in the request fields (benefits, capabilities, proof_points, offer_details). Do NOT invent stats, customers, certifications, timelines, integrations, guarantees, or outcomes.
+- Do NOT use any banned terms.
+- Do NOT name competitors unless explicitly provided.
+- Avoid absolutes ("guaranteed", "always", "never", "best", "number one", "industry-leading") unless quoting a proof_point verbatim.
+- If proof_points is empty, do NOT fabricate social proof. Use benefit-driven language instead.
 
-Return STRICT JSON ONLY (no markdown) matching the required schema for the chosen asset type.
+=== SUGARMAN SLIPPERY-SLIDE METHOD ===
+Apply these Joseph Sugarman copywriting principles:
+
+1. THE SLIDE: Every element exists for one reason—get the next element read.
+   Headline -> first sentence -> second sentence -> ... -> CTA. No decorative filler.
+
+2. SHORT OPENER: First sentence must be extremely short (2-7 words). Pull the reader in with minimal friction. Example: "Plans break." or "Here's the problem."
+
+3. SELL THE CONCEPT, NOT THE PRODUCT: Lead with the transformation or operational outcome the reader wants. Features and capabilities come later, framed as mechanism ("here's how").
+
+4. SEEDS OF CURIOSITY: End paragraphs with forward-pulling phrases that create open loops:
+   "But here's the thing." / "Let me explain." / "And that changes everything." / "Here's why."
+   Do NOT overuse—one seed per 3-4 paragraphs is ideal.
+
+5. BUCKET BRIGADE TRANSITIONS: Start some paragraphs with conversational bridges:
+   "Look," / "Truth is," / "So," / "And yet," / "Here's the thing:" / "You see,"
+
+6. SENTENCE RHYTHM: Vary sentence length deliberately.
+   Short. Then medium. Then a longer sentence that builds on the momentum of those first two. Then short again.
+   Never write three long sentences in a row. Mix punchy fragments with complete thoughts.
+
+7. ONE IDEA PER SENTENCE: Each sentence earns its place by advancing exactly one thought.
+
+8. EMOTION FIRST, LOGIC SECOND: Open with the feeling (frustration with broken schedules, relief of predictability). Then justify with logic (capabilities, proof).
+
+9. OBJECTIONS INSIDE THE FLOW: Raise 1-3 likely objections proactively and resolve them honestly. Don't save them for a separate section—weave them into the narrative. Share "dirty laundry" upfront to build trust.
+
+10. SPECIFICITY OVER HYPE: "Constraint-aware scheduling across 3 plants" beats "powerful scheduling solution." Concrete operational language builds credibility.
+
+11. EDIT BY SUBTRACTION: Express maximum meaning in minimum words. If a sentence can be cut without losing meaning, cut it.
+
+12. CLOSE WITH CLARITY: Summarize the offer. Restate the key benefit. Include guarantee/risk-reversal ONLY if provided. Make the CTA obvious and frictionless.
+
+=== OUTPUT FORMAT ===
+Return STRICT JSON ONLY (no markdown, no code fences, no commentary) matching the required schema for the chosen asset type.
 """.strip()
 
 def build_user_prompt(req: OTECopyRequest) -> str:
-    # Tell the model exactly what to output for each asset type
+    # Schema + asset-specific Sugarman guidance for each type
     schema_map = {
         "landing_hero": {
-            "headline_options": ["string", "string", "string", "string", "string"],
-            "subhead": "string",
-            "bullets": ["string (5-7 bullets)"],
-            "proof_line": "string (empty if no proof_points)",
-            "cta": "string",
-            "cta_secondary": "string",
-            "notes": ["string"],
+            "schema": {
+                "headline_options": ["string (5 options, concept-first, max 12 words each)"],
+                "subhead": "string (1-2 sentences, adds benefit + pulls into body)",
+                "bullets": ["string (5-7 bullets, one benefit each, start with verb)"],
+                "proof_line": "string (empty if no proof_points)",
+                "cta": "string",
+                "cta_secondary": "string",
+                "notes": ["string"],
+            },
+            "guidance": (
+                "Headlines: sell the outcome/concept, not the product name. Short, punchy, curiosity-driven. "
+                "Subhead: one clear benefit sentence + a pull into the bullets. "
+                "Bullets: start each with an action verb. One idea per bullet."
+            ),
         },
         "landing_sections": {
-            "sections": [
-                {
-                    "title": "string",
-                    "body": "string",
-                    "bullets": ["string"],
-                }
-            ],
-            "faq": [{"q": "string", "a": "string"}],
-            "cta_block": {"headline": "string", "body": "string", "cta": "string"},
-            "notes": ["string"],
+            "schema": {
+                "sections": [{"title": "string", "body": "string", "bullets": ["string"]}],
+                "faq": [{"q": "string", "a": "string"}],
+                "cta_block": {"headline": "string", "body": "string", "cta": "string"},
+                "notes": ["string"],
+            },
+            "guidance": (
+                "Section titles: when read in sequence, they should tell their own coherent story (Sugarman subhead rule). "
+                "Section body: open each with a short sentence, vary rhythm, end with a curiosity seed pulling into the next section. "
+                "FAQ: answer honestly and concisely. Raise real objections."
+            ),
         },
         "email_single": {
-            "subject_options": ["string", "string", "string", "string", "string"],
-            "preview_text": "string",
-            "body": "string",
-            "ps": "string",
-            "notes": ["string"],
+            "schema": {
+                "subject_options": ["string (5 options, curiosity-driven, max 8 words each)"],
+                "preview_text": "string (max 90 chars, extends the subject's curiosity)",
+                "body": "string",
+                "ps": "string (add one unexpected benefit or restate the CTA differently)",
+                "notes": ["string"],
+            },
+            "guidance": (
+                "Subject: create an open loop the reader must open the email to close. "
+                "Body: first sentence MUST be 2-7 words. Use bucket brigade transitions between paragraphs. "
+                "Weave in 1-2 objections mid-body and resolve them. End with a frictionless CTA. "
+                "P.S.: Sugarman's 'second headline'—many readers skip to the P.S. first."
+            ),
         },
         "email_sequence": {
-            "emails": [
-                {"day": "int", "subject": "string", "preview_text": "string", "body": "string"}
-            ],
-            "notes": ["string"],
+            "schema": {
+                "emails": [{"day": "int", "subject": "string", "preview_text": "string", "body": "string"}],
+                "notes": ["string"],
+            },
+            "guidance": (
+                "Each email should stand alone but build on the sequence arc: "
+                "Email 1: Problem recognition (emotion). Email 2: Mechanism/how (logic). "
+                "Email 3: Proof + objection handling. Email 4+: Urgency + CTA. "
+                "Every email: short opener, varied rhythm, one seed of curiosity pointing to the next."
+            ),
         },
-        "linkedin_post": {"post_variants": ["string", "string", "string"], "notes": ["string"]},
+        "linkedin_post": {
+            "schema": {
+                "post_variants": ["string (3 variants, each a complete post)"],
+                "notes": ["string"],
+            },
+            "guidance": (
+                "Hook: first line must stop the scroll—short, surprising, or contrarian. "
+                "Body: 150-250 words, short paragraphs (1-3 sentences), line breaks between each. "
+                "Use 'you' heavily. Include a practical takeaway (checklist, framework, or question). "
+                "CTA: soft, conversational. No hard sell on LinkedIn."
+            ),
+        },
         "google_search_ad": {
-            "headlines": ["string (max 30 chars)", "… up to 15"],
-            "descriptions": ["string (max 90 chars)", "… up to 4"],
-            "notes": ["string"],
+            "schema": {
+                "headlines": ["string (max 30 chars each, 15 options)"],
+                "descriptions": ["string (max 90 chars each, 4 options)"],
+                "notes": ["string"],
+            },
+            "guidance": (
+                "Headlines: front-load the benefit or keyword. Every character counts at 30 max. "
+                "Descriptions: lead with outcome, end with CTA. 90 chars max—be ruthless. "
+                "Specificity wins in search ads: operational language over generic claims."
+            ),
         },
         "sales_one_pager": {
-            "headline": "string",
-            "who_its_for": "string",
-            "problem": "string",
-            "solution": "string",
-            "key_benefits": ["string"],
-            "capabilities": ["string"],
-            "proof": ["string"],
-            "cta": "string",
-            "notes": ["string"],
+            "schema": {
+                "headline": "string",
+                "who_its_for": "string",
+                "problem": "string (2-3 sentences, emotion-first)",
+                "solution": "string (2-3 sentences, concept-first then mechanism)",
+                "key_benefits": ["string"],
+                "capabilities": ["string"],
+                "proof": ["string"],
+                "cta": "string",
+                "notes": ["string"],
+            },
+            "guidance": (
+                "This is a leave-behind document. Headline: concept, not product name. "
+                "Problem: start with a short, relatable pain sentence. "
+                "Solution: sell the concept first ('a schedule that survives contact with reality'), then the mechanism. "
+                "Keep everything scannable—a busy exec will spend 30 seconds on this."
+            ),
         },
     }
 
-    desired_schema = schema_map[req.asset_type]
+    entry = schema_map[req.asset_type]
+    desired_schema = entry["schema"]
+    asset_guidance = entry["guidance"]
 
     payload = {
         "asset_type": req.asset_type,
@@ -358,6 +537,9 @@ def build_user_prompt(req: OTECopyRequest) -> str:
 
     return f"""
 Create copy for asset_type="{req.asset_type}".
+
+Asset-specific guidance:
+{asset_guidance}
 
 Return STRICT JSON with this schema:
 {json.dumps(desired_schema, ensure_ascii=False, indent=2)}
@@ -448,24 +630,26 @@ if __name__ == "__main__":
 
     sample = OTECopyRequest(
         asset_type="landing_hero",
-        offer_name="On Time Edge (Demo)",
+        offer_name="On Time Edge — Production Scheduling Implementation",
         target_audience="manufacturing schedulers and operations leaders",
         primary_outcome="a schedule your team can keep using when priorities shift",
         key_benefits=[
-            "Reduce rework caused by last-minute changes",
-            "Make constraints and tradeoffs visible",
-            "Align planning decisions with daily execution",
-            "Keep stakeholders on the same page",
-            "Move faster without guesswork",
+            "Reduce rework caused by last-minute schedule changes",
+            "Make constraints and tradeoffs visible before they cause problems",
+            "Align planning decisions with daily shop-floor execution",
+            "Keep stakeholders on the same page across plants",
+            "Move from reactive firefighting to proactive scheduling",
         ],
         capabilities=[
-            "Constraint-aware planning inputs",
-            "Scenario comparisons",
-            "Operational schedule views",
+            "Vendor-agnostic APS selection and implementation",
+            "Constraint-aware scheduling model built around your actual shop floor",
+            "What-if scenario comparisons",
+            "ERP/MES/OEE integration",
         ],
         proof_points=[
-            # Put ONLY what you can verify:
-            "Built to support operations planning and scheduling workflows",
+            "1000+ site implementations across 300+ global companies",
+            "90-day time-to-first-value implementation target",
+            "Serving aerospace, medical device, food & beverage, and pharma manufacturers",
         ],
         objections=[
             "We already have a planning tool — adoption is the problem",
