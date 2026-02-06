@@ -28,9 +28,19 @@ DEFAULT_BRAND_PROFILE: Dict[str, Any] = {
     "tagline": "Navigate transformation and drive sustainable business value for manufacturing operations",
     "identity": (
         "On Time Edge is a vendor-agnostic manufacturing digital transformation consulting "
-        "and implementation firm—not a software product. They help manufacturers select, "
-        "implement, integrate, and optimize APS, MES, OEE, and supply chain systems."
+        "and implementation firm headquartered in Centennial, Colorado—not a software product. "
+        "Founded in 2004 by Michel Babineau, the company merged with Toward Zero (founded by "
+        "Aaron Muhl) in January 2023, combining deep APS/scheduling expertise with smart "
+        "manufacturing and systems integration capabilities. They help manufacturers select, "
+        "implement, integrate, and optimize APS, MES, OEE, and supply chain systems across "
+        "20+ manufacturing industries."
     ),
+    "leadership": [
+        "Brian Vogel — CEO (Sept 2025), 30+ years in manufacturing, ex-EPAM/Rockwell Automation",
+        "Michel Babineau — Founder/Managing Partner, founded OTE in 2004, ex-Infor/Ericsson",
+        "Aaron Muhl — Co-Founder/Managing Partner, founded Toward Zero 2015, ISA-95 voting member 12+ years",
+        "Brian Lindenmeyer — VP Strategy & Partnerships (Jan 2026), ex-Kinaxis, leading Kinaxis go-to-market expansion",
+    ],
     "voice": [
         "Plainspoken, ops-smart, confident",
         "Specific over hype—use operational language (constraints, throughput, lead time), not buzzwords",
@@ -39,18 +49,123 @@ DEFAULT_BRAND_PROFILE: Dict[str, Any] = {
         "Consultative, not salesy—trusted advisor, not product pusher",
     ],
     "audience": [
-        "Manufacturing and supply chain executives",
+        "Manufacturing and supply chain executives (VP Ops, VP Supply Chain, COO)",
         "Plant schedulers, planners, and operations leaders",
-        "RevOps / IT stakeholders supporting operational systems",
-        "Industries: aerospace, automotive, CPG, food & beverage, medical device, metals, pharma, plastics",
+        "IT / OT stakeholders supporting operational systems and digital transformation",
+        "RevOps stakeholders evaluating APS, MES, and supply chain platforms",
     ],
+    "industries": [
+        "Aerospace and defense",
+        "Automotive",
+        "Consumer packaged goods (CPG)",
+        "Food and beverage",
+        "Life sciences",
+        "Medical device",
+        "Metals and metal parts",
+        "Oil and gas",
+        "Pharmaceutical",
+        "Plastics and rubber",
+        "Industrial equipment",
+        "Building materials",
+    ],
+    "services": [
+        "System implementation — APS, MES, OEE deployment with 90-day time-to-first-value targets",
+        "Systems integration — ERP/MES/OEE connectivity, custom APIs, ISA-88/95 layer alignment",
+        "Managed services (MSP) — post-go-live system health, upgrades, and process optimization",
+        "Business process consulting — Theory of Constraints (TOC) and Critical Chain methodology",
+        "Digital strategy — current/future state mapping, digital master plans, IT/OT convergence",
+        "Training — solutions training for manufacturing teams",
+    ],
+    "methodology": {
+        "mdif": (
+            "MDIF (Manufacturing Digital Interoperability Framework): proprietary strategic framework "
+            "providing a structured, repeatable path from strategy through execution and enablement. "
+            "Emphasizes system cohesion, data interoperability, and persona-driven workflows. "
+            "Enables AI-driven optimization: forecasting optimal sequences, dynamically rerouting around "
+            "disruptions, simulating what-if scenarios, and adjusting setpoints in real time."
+        ),
+        "toc": (
+            "Theory of Constraints (TOC) / TLS approach: optimizing systems by identifying and managing "
+            "the binding constraint, reducing bottlenecks, increasing throughput, and optimizing scheduling "
+            "for customer demand rather than purely reducing waste."
+        ),
+        "project_kickoff": (
+            "Projects begin with a three-day workshop to align the workforce behind goals and objectives. "
+            "Engineering work commences immediately. First business impact with quantifiable results is "
+            "expected approximately 90-100 days after engineering work launches."
+        ),
+    },
+    "partners": {
+        "aps": [
+            "Kinaxis Maestro (major strategic partner — SI, Solution Extension, VAR)",
+            "Siemens Opcenter APS (formerly Preactor)",
+            "Dassault DELMIA Ortems",
+            "PlanetTogether APS",
+            "Optessa (now Eyelit Technologies)",
+            "Greycon",
+            "GE Digital ROB-EX Scheduler",
+            "GE Proficy Scheduling",
+            "Infor Thru-Put",
+            "MOOPI by Berclain (now Infor)",
+        ],
+        "mes_oee": [
+            "Sepasoft (MES modules on Ignition)",
+            "Parsec Automation / TrakSYS",
+            "AVEVA (MES/SCADA/operations)",
+            "GE Vernova / Proficy (MES/MOM/historian)",
+            "Fuuz by MFGx (AI-enabled MES/WMS/QMS — strategic partnership Jan 2026)",
+        ],
+        "automation_plm": [
+            "Rockwell Automation",
+            "Siemens (automation and controls)",
+            "FANUC America",
+            "Dassault Systemes (PLM)",
+            "PTC (PLM)",
+        ],
+        "other": [
+            "Ignition by Inductive Automation (SCADA/MES platform)",
+            "Sage Clarity",
+            "JITbase Technology Inc.",
+            "Canary Labs (data historian/analytics)",
+            "ZONTAL Inc. (data management for life sciences)",
+            "Epicflow (resource/project planning)",
+            "42Q (cloud MES/quality)",
+            "CESMII (The Smart Manufacturing Institute)",
+        ],
+    },
     "positioning": [
-        "Vendor-agnostic: pick the right tool for each client, not push one platform",
+        "Vendor-agnostic: partners with competing vendors (Siemens + Rockwell, Dassault + Siemens, multiple APS platforms) — recommends whichever fits the client's environment",
         "30+ years of APS implementation specialization, 1000+ site implementations across 300+ global companies",
-        "90-day time-to-first-value implementation targets",
+        "90-day time-to-first-value implementation targets, starting with a 3-day alignment workshop",
         "MDIF (Manufacturing Digital Interoperability Framework): proprietary methodology from strategy through execution",
-        "Post-implementation partnership—not a build-and-walk-away consultancy",
+        "Post-implementation partnership via managed services—not a build-and-walk-away consultancy",
         "Turn constraints into an actionable plan teams can execute",
+        "Theory of Constraints (TOC) practitioners — optimize the binding constraint, not just reduce waste",
+        "Formed from 2023 merger of On-Time Edge (APS/scheduling) + Toward Zero (smart manufacturing/integration)",
+    ],
+    "proof_points": [
+        "1000+ site implementations across 300+ global companies",
+        "90-day time-to-first-value implementation target",
+        "30+ years of APS implementation specialization",
+        "20+ manufacturing industries served",
+        "JARP Industries: achieved perfect on-time delivery year, won Supplier of the Year award",
+        "Electrical device manufacturer: on-time delivery improved by 95%",
+        "Building materials company: sales improved 10% through better scheduling",
+        "Top 5 life sciences manufacturer selected OTE for global digital strategy (WEF Lighthouse framework)",
+        "Named clients include Lockheed Martin, Chrysler, Del Monte, Bemis Manufacturing, Delta Faucet, Universal Studios",
+        "Manufacturing Scheduling Summit 2025 — inaugural industry event featuring CESMII CEO keynote",
+    ],
+    "milestones": [
+        "2004 — Michel Babineau founds On-Time Edge",
+        "2015 — Aaron Muhl founds Toward Zero",
+        "Dec 2022 — Merger announced",
+        "Jan 2023 — Merged operations as On Time Edge dba Toward Zero",
+        "2024 — Refreshed brand under unified On Time Edge name",
+        "June 2025 — Top 5 life sciences manufacturer selects OTE for global digital strategy",
+        "Sept 2025 — Brian Vogel appointed CEO to advance MDIF and global growth",
+        "Nov 2025 — Inaugural Manufacturing Scheduling Summit in Philadelphia",
+        "Jan 2026 — Fuuz (MFGx) strategic partnership announced",
+        "Jan 2026 — Brian Lindenmeyer appointed VP Strategy & Partnerships for Kinaxis expansion",
     ],
     "do_not_say": [
         "IED-Net",
@@ -75,6 +190,20 @@ DEFAULT_BRAND_PROFILE: Dict[str, Any] = {
         "OEE",
         "ERP",
         "what-if",
+        "Theory of Constraints",
+        "TOC",
+        "MDIF",
+        "ISA-95",
+        "ISA-88",
+        "IT/OT convergence",
+        "APS",
+        "MOM",
+        "digital twin",
+        "IIoT",
+        "shop floor",
+        "binding constraint",
+        "replanning",
+        "on-time delivery",
     ],
 }
 
