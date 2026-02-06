@@ -7,6 +7,8 @@ import httpx
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
 
+from consciousness import build_consciousness
+
 Provider = Literal["template", "ollama", "compatible"]
 AssetType = Literal[
     "landing_hero",
@@ -55,12 +57,27 @@ DEFAULT_BRAND_PROFILE: Dict[str, Any] = {
     ],
     "safe_words": [
         # Use only when supported by inputs; vocabulary hints, not claims:
-        "schedule", "constraints", "capacity", "throughput", "lead time",
-        "service levels", "planning", "execution", "variability",
-        "digital transformation", "interoperability", "vendor-agnostic",
-        "time-to-value", "integration", "MES", "OEE", "ERP", "what-if",
+        "schedule",
+        "constraints",
+        "capacity",
+        "throughput",
+        "lead time",
+        "service levels",
+        "planning",
+        "execution",
+        "variability",
+        "digital transformation",
+        "interoperability",
+        "vendor-agnostic",
+        "time-to-value",
+        "integration",
+        "MES",
+        "OEE",
+        "ERP",
+        "what-if",
     ],
 }
+
 
 def load_brand_profile() -> Dict[str, Any]:
     """
@@ -76,6 +93,7 @@ def load_brand_profile() -> Dict[str, Any]:
     merged.update(obj)
     return merged
 
+
 # ----------------------------
 # Request / response
 # ----------------------------
@@ -83,9 +101,17 @@ class OTECopyRequest(BaseModel):
     asset_type: AssetType = "landing_hero"
 
     # Product/offer facts (ONLY these may be claimed)
-    offer_name: str = Field(..., description="What are we selling? e.g., 'On Time Edge APS Platform' or 'Demo'")
-    target_audience: str = Field(..., description="Who is this for? e.g., 'plant schedulers at mid-market manufacturers'")
-    primary_outcome: str = Field(..., description="Outcome they want (no numbers unless true).")
+    offer_name: str = Field(
+        ...,
+        description="What are we selling? e.g., 'On Time Edge APS Platform' or 'Demo'",
+    )
+    target_audience: str = Field(
+        ...,
+        description="Who is this for? e.g., 'plant schedulers at mid-market manufacturers'",
+    )
+    primary_outcome: str = Field(
+        ..., description="Outcome they want (no numbers unless true)."
+    )
 
     # Provide only REAL facts you can stand behind:
     key_benefits: List[str]
@@ -97,8 +123,12 @@ class OTECopyRequest(BaseModel):
     objections: List[str] = Field(default_factory=list)
 
     # Offer details (optional)
-    offer_details: str = Field(..., description="What do they get / terms / pricing if applicable.")
-    guarantee_or_risk_reversal: Optional[str] = Field(default=None, description="Only if true.")
+    offer_details: str = Field(
+        ..., description="What do they get / terms / pricing if applicable."
+    )
+    guarantee_or_risk_reversal: Optional[str] = Field(
+        default=None, description="Only if true."
+    )
     cta: str = "Book a demo"
 
     # Style knobs
@@ -106,19 +136,25 @@ class OTECopyRequest(BaseModel):
     length: Literal["short", "medium", "long"] = "medium"
 
     # Guardrails
-    banned_terms: List[str] = Field(default_factory=list, description="Extra terms to forbid in the output.")
-    required_phrases: List[str] = Field(default_factory=list, description="Phrases that must appear (if any).")
+    banned_terms: List[str] = Field(
+        default_factory=list, description="Extra terms to forbid in the output."
+    )
+    required_phrases: List[str] = Field(
+        default_factory=list, description="Phrases that must appear (if any)."
+    )
 
     # LLM settings (only if provider != template)
     provider: Provider = "template"
     model: str = "llama3.1"
     temperature: float = 0.6
 
+
 class OTECopyResponse(BaseModel):
     asset_type: AssetType
     content: Dict[str, Any]
     warnings: List[str]
     slippery_score: float
+
 
 # ----------------------------
 # Slippery-slide heuristic score
@@ -132,12 +168,15 @@ CURIOSITY_SEEDS = re.compile(
     re.I,
 )
 
+
 def _sentences(text: str) -> List[str]:
-    s = re.split(r'(?<=[.!?])\s+', text.strip())
+    s = re.split(r"(?<=[.!?])\s+", text.strip())
     return [x.strip() for x in s if x.strip()]
+
 
 def _word_count(s: str) -> int:
     return len(re.findall(r"\w+", s))
+
 
 def slippery_score(text: str) -> float:
     """
@@ -200,10 +239,15 @@ def slippery_score(text: str) -> float:
     total = opener_score + rhythm_score + avg_score + compress_score + curiosity_score
     return round(max(0.0, min(100.0, total)), 2)
 
+
 # ----------------------------
 # Guardrail / linting
 # ----------------------------
-STAT_PATTERN = re.compile(r"(\b\d+(\.\d+)?\s*%|\b\d+(\.\d+)?\s*x\b|\b\d+(\.\d+)?\s*(days|hours|weeks|months)\b)", re.I)
+STAT_PATTERN = re.compile(
+    r"(\b\d+(\.\d+)?\s*%|\b\d+(\.\d+)?\s*x\b|\b\d+(\.\d+)?\s*(days|hours|weeks|months)\b)",
+    re.I,
+)
+
 
 def lint_copy(
     text: str,
@@ -213,7 +257,10 @@ def lint_copy(
     warnings: List[str] = []
 
     # 1) banned terms (brand + request)
-    banned = set([t.lower() for t in brand.get("do_not_say", [])] + [t.lower() for t in req.banned_terms])
+    banned = set(
+        [t.lower() for t in brand.get("do_not_say", [])]
+        + [t.lower() for t in req.banned_terms]
+    )
     for term in banned:
         if term and term in text.lower():
             warnings.append(f"Banned term found: '{term}'")
@@ -229,15 +276,27 @@ def lint_copy(
     proof_blob = " ".join(req.proof_points).lower()
     for s in output_stats:
         if s.lower() not in proof_blob:
-            warnings.append(f"Possible invented stat/number: '{s}' (not found in proof_points)")
+            warnings.append(
+                f"Possible invented stat/number: '{s}' (not found in proof_points)"
+            )
 
     # 4) hard claims language check (soft heuristic)
-    risky_phrases = ["guaranteed", "always", "never", "best", "number one", "industry-leading"]
+    risky_phrases = [
+        "guaranteed",
+        "always",
+        "never",
+        "best",
+        "number one",
+        "industry-leading",
+    ]
     for rp in risky_phrases:
         if rp in text.lower():
-            warnings.append(f"Potentially over-absolute claim detected: '{rp}' (consider softening or adding proof)")
+            warnings.append(
+                f"Potentially over-absolute claim detected: '{rp}' (consider softening or adding proof)"
+            )
 
     return warnings
+
 
 # ----------------------------
 # Asset templates (no LLM)
@@ -264,6 +323,7 @@ def template_landing_hero(req: OTECopyRequest, brand: Dict[str, Any]) -> Dict[st
         "cta_secondary": "See how it works",
     }
 
+
 def template_email_single(req: OTECopyRequest, brand: Dict[str, Any]) -> Dict[str, Any]:
     # Sugarman: subject creates curiosity; opening is SHORT
     subject = f"The real reason {req.target_audience} replan every week"
@@ -283,7 +343,9 @@ def template_email_single(req: OTECopyRequest, brand: Dict[str, Any]) -> Dict[st
     # Proof (only if available)
     proof_block = ""
     if req.proof_points:
-        proof_block = "And these aren't hypotheticals:\n" + "\n".join([f"- {p}" for p in req.proof_points[:4]])
+        proof_block = "And these aren't hypotheticals:\n" + "\n".join(
+            [f"- {p}" for p in req.proof_points[:4]]
+        )
 
     # Sugarman: raise objections proactively, resolve honestly
     objection_block = ""
@@ -306,7 +368,10 @@ def template_email_single(req: OTECopyRequest, brand: Dict[str, Any]) -> Dict[st
         "body": "\n\n".join(parts).strip(),
     }
 
-def template_linkedin_post(req: OTECopyRequest, brand: Dict[str, Any]) -> Dict[str, Any]:
+
+def template_linkedin_post(
+    req: OTECopyRequest, brand: Dict[str, Any]
+) -> Dict[str, Any]:
     # Sugarman: short hook (pattern interrupt), then rhythm variation
     hook = "Your schedule isn't the problem."
     body = (
@@ -326,10 +391,15 @@ def template_linkedin_post(req: OTECopyRequest, brand: Dict[str, Any]) -> Dict[s
     cta = f"Want a quick walkthrough? {req.cta}"
     return {"post": "\n\n".join([hook, body, cta]).strip()}
 
-def generate_template(req: OTECopyRequest, brand: Dict[str, Any]) -> Tuple[Dict[str, Any], str]:
+
+def generate_template(
+    req: OTECopyRequest, brand: Dict[str, Any]
+) -> Tuple[Dict[str, Any], str]:
     if req.asset_type == "landing_hero":
         out = template_landing_hero(req, brand)
-        text_for_score = " ".join([str(v) for v in out.values() if isinstance(v, (str, list))])
+        text_for_score = " ".join(
+            [str(v) for v in out.values() if isinstance(v, (str, list))]
+        )
         return out, text_for_score
 
     if req.asset_type == "email_single":
@@ -347,74 +417,38 @@ def generate_template(req: OTECopyRequest, brand: Dict[str, Any]) -> Tuple[Dict[
         "cta": req.cta,
         "offer_details": req.offer_details,
     }
-    text_for_score = " ".join([out.get("headline", ""), out.get("body", ""), out.get("cta", "")])
+    text_for_score = " ".join(
+        [out.get("headline", ""), out.get("body", ""), out.get("cta", "")]
+    )
     return out, text_for_score
+
 
 # ----------------------------
 # LLM prompting
 # ----------------------------
 def build_system_prompt(brand: Dict[str, Any]) -> str:
-    identity = brand.get("identity", "")
-    voice = ", ".join(brand.get("voice", []))
     do_not_say = ", ".join(brand.get("do_not_say", [])) or "(none)"
 
-    return f"""
-You are a direct-response copywriter writing for {brand['brand_name']}.
-{identity}
+    consciousness = build_consciousness(brand)
 
-Voice: {voice}
-Banned terms: {do_not_say}
+    return f"""{consciousness}
 
-=== FACTUAL GUARDRAILS (non-negotiable) ===
-- Use ONLY facts provided in the request fields (benefits, capabilities, proof_points, offer_details). Do NOT invent stats, customers, certifications, timelines, integrations, guarantees, or outcomes.
-- Do NOT use any banned terms.
-- Do NOT name competitors unless explicitly provided.
-- Avoid absolutes ("guaranteed", "always", "never", "best", "number one", "industry-leading") unless quoting a proof_point verbatim.
-- If proof_points is empty, do NOT fabricate social proof. Use benefit-driven language instead.
-
-=== SUGARMAN SLIPPERY-SLIDE METHOD ===
-Apply these Joseph Sugarman copywriting principles:
-
-1. THE SLIDE: Every element exists for one reason—get the next element read.
-   Headline -> first sentence -> second sentence -> ... -> CTA. No decorative filler.
-
-2. SHORT OPENER: First sentence must be extremely short (2-7 words). Pull the reader in with minimal friction. Example: "Plans break." or "Here's the problem."
-
-3. SELL THE CONCEPT, NOT THE PRODUCT: Lead with the transformation or operational outcome the reader wants. Features and capabilities come later, framed as mechanism ("here's how").
-
-4. SEEDS OF CURIOSITY: End paragraphs with forward-pulling phrases that create open loops:
-   "But here's the thing." / "Let me explain." / "And that changes everything." / "Here's why."
-   Do NOT overuse—one seed per 3-4 paragraphs is ideal.
-
-5. BUCKET BRIGADE TRANSITIONS: Start some paragraphs with conversational bridges:
-   "Look," / "Truth is," / "So," / "And yet," / "Here's the thing:" / "You see,"
-
-6. SENTENCE RHYTHM: Vary sentence length deliberately.
-   Short. Then medium. Then a longer sentence that builds on the momentum of those first two. Then short again.
-   Never write three long sentences in a row. Mix punchy fragments with complete thoughts.
-
-7. ONE IDEA PER SENTENCE: Each sentence earns its place by advancing exactly one thought.
-
-8. EMOTION FIRST, LOGIC SECOND: Open with the feeling (frustration with broken schedules, relief of predictability). Then justify with logic (capabilities, proof).
-
-9. OBJECTIONS INSIDE THE FLOW: Raise 1-3 likely objections proactively and resolve them honestly. Don't save them for a separate section—weave them into the narrative. Share "dirty laundry" upfront to build trust.
-
-10. SPECIFICITY OVER HYPE: "Constraint-aware scheduling across 3 plants" beats "powerful scheduling solution." Concrete operational language builds credibility.
-
-11. EDIT BY SUBTRACTION: Express maximum meaning in minimum words. If a sentence can be cut without losing meaning, cut it.
-
-12. CLOSE WITH CLARITY: Summarize the offer. Restate the key benefit. Include guarantee/risk-reversal ONLY if provided. Make the CTA obvious and frictionless.
+=== BANNED TERMS ===
+{do_not_say}
 
 === OUTPUT FORMAT ===
 Return STRICT JSON ONLY (no markdown, no code fences, no commentary) matching the required schema for the chosen asset type.
 """.strip()
+
 
 def build_user_prompt(req: OTECopyRequest) -> str:
     # Schema + asset-specific Sugarman guidance for each type
     schema_map = {
         "landing_hero": {
             "schema": {
-                "headline_options": ["string (5 options, concept-first, max 12 words each)"],
+                "headline_options": [
+                    "string (5 options, concept-first, max 12 words each)"
+                ],
                 "subhead": "string (1-2 sentences, adds benefit + pulls into body)",
                 "bullets": ["string (5-7 bullets, one benefit each, start with verb)"],
                 "proof_line": "string (empty if no proof_points)",
@@ -430,7 +464,9 @@ def build_user_prompt(req: OTECopyRequest) -> str:
         },
         "landing_sections": {
             "schema": {
-                "sections": [{"title": "string", "body": "string", "bullets": ["string"]}],
+                "sections": [
+                    {"title": "string", "body": "string", "bullets": ["string"]}
+                ],
                 "faq": [{"q": "string", "a": "string"}],
                 "cta_block": {"headline": "string", "body": "string", "cta": "string"},
                 "notes": ["string"],
@@ -443,7 +479,9 @@ def build_user_prompt(req: OTECopyRequest) -> str:
         },
         "email_single": {
             "schema": {
-                "subject_options": ["string (5 options, curiosity-driven, max 8 words each)"],
+                "subject_options": [
+                    "string (5 options, curiosity-driven, max 8 words each)"
+                ],
                 "preview_text": "string (max 90 chars, extends the subject's curiosity)",
                 "body": "string",
                 "ps": "string (add one unexpected benefit or restate the CTA differently)",
@@ -458,7 +496,14 @@ def build_user_prompt(req: OTECopyRequest) -> str:
         },
         "email_sequence": {
             "schema": {
-                "emails": [{"day": "int", "subject": "string", "preview_text": "string", "body": "string"}],
+                "emails": [
+                    {
+                        "day": "int",
+                        "subject": "string",
+                        "preview_text": "string",
+                        "body": "string",
+                    }
+                ],
                 "notes": ["string"],
             },
             "guidance": (
@@ -548,16 +593,27 @@ Use ONLY these facts (do not add new facts):
 {json.dumps(payload, ensure_ascii=False, indent=2)}
 """.strip()
 
-async def call_ollama(messages: List[Dict[str, str]], model: str, temperature: float) -> str:
+
+async def call_ollama(
+    messages: List[Dict[str, str]], model: str, temperature: float
+) -> str:
     url = os.getenv("OLLAMA_URL", "http://localhost:11434/api/chat")
-    payload = {"model": model, "messages": messages, "options": {"temperature": temperature}, "stream": False}
+    payload = {
+        "model": model,
+        "messages": messages,
+        "options": {"temperature": temperature},
+        "stream": False,
+    }
     async with httpx.AsyncClient(timeout=60) as client:
         r = await client.post(url, json=payload)
         r.raise_for_status()
         data = r.json()
         return data.get("message", {}).get("content", "")
 
-async def call_compatible(messages: List[Dict[str, str]], model: str, temperature: float) -> str:
+
+async def call_compatible(
+    messages: List[Dict[str, str]], model: str, temperature: float
+) -> str:
     base = os.getenv("COMPAT_BASE_URL", "").rstrip("/")
     key = os.getenv("COMPAT_API_KEY", "")
     if not base or not key:
@@ -571,6 +627,7 @@ async def call_compatible(messages: List[Dict[str, str]], model: str, temperatur
         data = r.json()
         return data["choices"][0]["message"]["content"]
 
+
 def parse_json(content: str) -> Dict[str, Any]:
     try:
         return json.loads(content)
@@ -580,7 +637,10 @@ def parse_json(content: str) -> Dict[str, Any]:
             raise ValueError("Model did not return valid JSON.")
         return json.loads(m.group(0))
 
-async def generate_llm(req: OTECopyRequest, brand: Dict[str, Any]) -> Tuple[Dict[str, Any], str]:
+
+async def generate_llm(
+    req: OTECopyRequest, brand: Dict[str, Any]
+) -> Tuple[Dict[str, Any], str]:
     messages = [
         {"role": "system", "content": build_system_prompt(brand)},
         {"role": "user", "content": build_user_prompt(req)},
@@ -597,10 +657,12 @@ async def generate_llm(req: OTECopyRequest, brand: Dict[str, Any]) -> Tuple[Dict
     text_for_score = json.dumps(obj, ensure_ascii=False)
     return obj, text_for_score
 
+
 # ----------------------------
 # API
 # ----------------------------
 app = FastAPI(title="On Time Edge Copy Bot", version="1.0")
+
 
 @app.post("/generate", response_model=OTECopyResponse)
 async def generate(req: OTECopyRequest):
@@ -621,6 +683,7 @@ async def generate(req: OTECopyRequest):
         warnings=warnings,
         slippery_score=slippery_score(flat_text),
     )
+
 
 # ----------------------------
 # CLI example
