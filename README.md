@@ -56,11 +56,12 @@ ruff format --check .
 | Variable | Purpose | Default |
 |---|---|---|
 | `BRAND_PROFILE_JSON` | Path to a JSON file that overrides default brand settings | _(uses built-in defaults)_ |
+| `ANTHROPIC_API_KEY` | Anthropic API key (when `provider=anthropic`) | _(none)_ |
 | `OLLAMA_URL` | Ollama API endpoint (when `provider=ollama`) | `http://localhost:11434/api/chat` |
 | `COMPAT_BASE_URL` | OpenAI-compatible API base URL (when `provider=compatible`) | _(none)_ |
 | `COMPAT_API_KEY` | API key for the compatible provider | _(none)_ |
-| `PROVIDER` | Default LLM provider for CLI mode (`template`, `ollama`, `compatible`) | `template` |
-| `MODEL` | Model name for LLM providers | `llama3.1` |
+| `PROVIDER` | Default LLM provider for CLI mode (`template`, `ollama`, `compatible`, `anthropic`) | `template` |
+| `MODEL` | Model name for LLM providers | `claude-sonnet-4-5-20250929` |
 | `TEMP` | Temperature for LLM generation | `0.6` |
 
 ## Project structure

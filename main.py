@@ -1,3 +1,4 @@
+import hashlib
 import os
 import json
 import re
@@ -9,7 +10,7 @@ from pydantic import BaseModel, Field
 
 from consciousness import build_consciousness
 
-Provider = Literal["template", "ollama", "compatible"]
+Provider = Literal["template", "ollama", "compatible", "anthropic"]
 AssetType = Literal[
     "landing_hero",
     "landing_sections",
@@ -274,7 +275,7 @@ class OTECopyRequest(BaseModel):
 
     # LLM settings (only if provider != template)
     provider: Provider = "template"
-    model: str = "llama3.1"
+    model: str = "claude-sonnet-4-5-20250929"
     temperature: float = 0.6
 
 
@@ -428,62 +429,169 @@ def lint_copy(
 
 
 # ----------------------------
+# Template variation helpers
+# ----------------------------
+def _pick(options: list, seed: str) -> Any:
+    """Deterministically pick from a list based on a seed string."""
+    idx = int(hashlib.md5(seed.encode()).hexdigest(), 16) % len(options)
+    return options[idx]
+
+
+def _request_seed(req: OTECopyRequest) -> str:
+    """Create a seed string from request content for deterministic variation."""
+    return f"{req.offer_name}|{req.target_audience}|{req.primary_outcome}"
+
+
+# ----------------------------
 # Asset templates (no LLM)
 # ----------------------------
 def template_landing_hero(req: OTECopyRequest, brand: Dict[str, Any]) -> Dict[str, Any]:
-    # Sugarman: headline sells the concept/outcome, not the product
-    headline = f"Plans break. {req.primary_outcome.capitalize()} shouldn't."
-    # Sugarman: subhead adds one benefit + pulls into body
-    subhead = (
-        f"{brand['brand_name']} helps {req.target_audience} turn constraints "
-        f"into a plan teams can actually run. Without adding chaos to your day."
-    )
+    seed = _request_seed(req)
+    name = brand["brand_name"]
+
+    headline_patterns = [
+        f"Plans break. {req.primary_outcome.capitalize()} shouldn't.",
+        "Your schedule survives Monday. What about Wednesday?",
+        "The plan looked perfect. Then reality showed up.",
+        "Stop replanning. Start executing.",
+        "Constraints aren't the enemy. Ignoring them is.",
+    ]
+    headline = _pick(headline_patterns, seed)
+
+    subhead_patterns = [
+        (
+            f"{name} helps {req.target_audience} turn constraints "
+            f"into a plan teams can actually run. Without adding chaos to your day."
+        ),
+        (
+            f"Most scheduling tools break on contact with your shop floor. "
+            f"{name} builds around the constraints you already have."
+        ),
+        (
+            f"Your team knows the constraints by feel. "
+            f"{name} makes them visible — and actionable."
+        ),
+    ]
+    subhead = _pick(subhead_patterns, seed + "sub")
+
     bullets = [b for b in req.key_benefits[:5]]
     proof = req.proof_points[:3]
     proof_line = " | ".join(proof) if proof else ""
-    cta = req.cta
 
     return {
         "headline": headline,
         "subhead": subhead,
         "bullets": bullets,
         "proof_line": proof_line,
-        "cta": cta,
+        "cta": req.cta,
         "cta_secondary": "See how it works",
     }
 
 
 def template_email_single(req: OTECopyRequest, brand: Dict[str, Any]) -> Dict[str, Any]:
-    # Sugarman: subject creates curiosity; opening is SHORT
-    subject = f"The real reason {req.target_audience} replan every week"
-    # Short opener (Sugarman: 2-7 words to pull them in)
-    opening = "Plans break. You know this."
-    # Bucket brigade + bridge (emotion first)
-    bridge = (
-        "The schedule looked solid Monday morning. By Wednesday, three things changed and "
-        "your team is back to firefighting.\n\n"
-        f"Here's the thing: {brand['brand_name']} is built for exactly that moment. "
-        "Not a prettier plan. A plan your team can keep running when constraints shift."
-    )
-    # Benefits with a seed of curiosity
-    benefits = "\n".join([f"- {b}" for b in req.key_benefits[:5]])
-    benefits_block = "Here's what that looks like in practice:\n" + benefits
+    seed = _request_seed(req)
+    name = brand["brand_name"]
 
-    # Proof (only if available)
+    # --- Subject lines: varied patterns ---
+    subject_patterns = [
+        f"The real reason {req.target_audience} replan every week",
+        "Your Wednesday problem",
+        "What happens to your schedule by midweek?",
+        "The scheduling gap nobody demos",
+        "Why adoption fails (and what to do instead)",
+    ]
+    subject = _pick(subject_patterns, seed)
+
+    # --- Openers: short, punchy, varied ---
+    opener_patterns = [
+        "Plans break. You know this.",
+        "Here's what nobody tells you.",
+        "Let's skip the pitch.",
+        "Quick question.",
+        "Your schedule looked solid Monday.",
+    ]
+    opening = _pick(opener_patterns, seed + "open")
+
+    # --- Bridges: emotion-first, then pivot ---
+    bridge_patterns = [
+        (
+            "The schedule looked solid Monday morning. By Wednesday, three things "
+            "changed and your team is back to firefighting.\n\n"
+            f"Here's the thing: {name} is built for exactly that moment. "
+            "Not a prettier plan. A plan your team can keep running when "
+            "constraints shift."
+        ),
+        (
+            "You've seen it happen. The plan made sense when it was published. "
+            "Then a machine went down, a priority shifted, and suddenly everyone's "
+            "working off a different version of reality.\n\n"
+            f"That's the gap {name} closes. Not with better software — with "
+            "better implementation of the right software for your plant."
+        ),
+        (
+            "Most scheduling conversations start with a demo. We'd rather start "
+            "with a question: what breaks first?\n\n"
+            "Because the answer tells us more about your operation than any "
+            "requirements document. And it's exactly where we focus."
+        ),
+    ]
+    bridge = _pick(bridge_patterns, seed + "bridge")
+
+    # --- Benefits block ---
+    benefit_intros = [
+        "Here's what that looks like in practice:",
+        "Specifically, here's what changes:",
+        "What you'd walk away with:",
+    ]
+    benefits = "\n".join([f"- {b}" for b in req.key_benefits[:5]])
+    benefits_block = _pick(benefit_intros, seed + "ben") + "\n" + benefits
+
+    # --- Proof block ---
     proof_block = ""
     if req.proof_points:
-        proof_block = "And these aren't hypotheticals:\n" + "\n".join(
-            [f"- {p}" for p in req.proof_points[:4]]
+        proof_intros = [
+            "And these aren't hypotheticals:",
+            "This isn't theory:",
+            "The track record:",
+        ]
+        proof_block = (
+            _pick(proof_intros, seed + "proof")
+            + "\n"
+            + "\n".join([f"- {p}" for p in req.proof_points[:4]])
         )
 
-    # Sugarman: raise objections proactively, resolve honestly
+    # --- Objection handling: individual responses ---
     objection_block = ""
     if req.objections:
-        obj_lines = "\n".join([f'"{o}"' for o in req.objections[:2]])
-        objection_block = f"You might be thinking:\n{obj_lines}\n\nFair. That's exactly why we start with your real constraints, not a generic demo."
+        obj_parts = ["You might be thinking:\n"]
+        objection_responses = [
+            "Fair. That's exactly why we start with your real constraints, not a generic demo.",
+            "We hear that a lot. And honestly? Sometimes the existing tool is fine — it just needs better implementation. We'll tell you if that's the case.",
+            "Makes sense. That's actually the starting point, not the blocker. We build around variability — not despite it.",
+            "Understood. That's why our first conversation isn't a pitch. It's a diagnostic.",
+        ]
+        for i, obj in enumerate(req.objections[:3]):
+            response = _pick(objection_responses, seed + f"obj{i}")
+            obj_parts.append(f'"{obj}"\n\n{response}')
+        objection_block = "\n\n".join(obj_parts)
 
-    # Sugarman: close with clarity, restate benefit, frictionless CTA
-    close = f"If this is worth exploring, the next step is simple:\n{req.cta}\n\n{req.offer_details}"
+    # --- Close ---
+    close_patterns = [
+        f"If this is worth exploring, the next step is simple:\n{req.cta}\n\n{req.offer_details}",
+        f"One step. No commitment:\n{req.cta}\n\n{req.offer_details}",
+        f"Here's the next move:\n{req.cta}\n\n{req.offer_details}",
+    ]
+    close = _pick(close_patterns, seed + "close")
+
+    # --- P.S. line (Sugarman's second headline) ---
+    ps_patterns = [
+        None,  # sometimes no P.S. is fine
+        "P.S. If we can't help, we'll tell you. We'd rather earn trust than waste your time.",
+        "P.S. Not ready for a call? Reply with your top scheduling constraint — we'll send a one-page breakdown of what we've seen work.",
+    ]
+    if req.guarantee_or_risk_reversal:
+        ps_patterns.append(f"P.S. {req.guarantee_or_risk_reversal}")
+    ps = _pick(ps_patterns, seed + "ps")
 
     parts = [opening, bridge, benefits_block]
     if proof_block:
@@ -491,6 +599,8 @@ def template_email_single(req: OTECopyRequest, brand: Dict[str, Any]) -> Dict[st
     if objection_block:
         parts.append(objection_block)
     parts.append(close)
+    if ps:
+        parts.append(ps)
 
     return {
         "subject": subject,
@@ -498,11 +608,158 @@ def template_email_single(req: OTECopyRequest, brand: Dict[str, Any]) -> Dict[st
     }
 
 
+def template_email_sequence(
+    req: OTECopyRequest, brand: Dict[str, Any]
+) -> Dict[str, Any]:
+    """Generate a 3-email sequence: problem, mechanism, proof+CTA."""
+    seed = _request_seed(req)
+    name = brand["brand_name"]
+    benefits = req.key_benefits
+    proof = req.proof_points
+    objections = req.objections
+
+    # --- Email 1: Problem recognition (emotion) ---
+    e1_openers = [
+        "Plans break. You know this.",
+        "Quick question.",
+        "Here's the pattern.",
+    ]
+    e1_opener = _pick(e1_openers, seed + "e1o")
+
+    e1_body_parts = [
+        e1_opener,
+        (
+            "The schedule looked solid Monday morning. By Wednesday, three things "
+            "changed and your team is back to firefighting.\n\n"
+            "It's not a planning problem. It's a constraints problem. The plan "
+            "doesn't account for what actually happens on the floor."
+        ),
+    ]
+    if benefits:
+        e1_body_parts.append(
+            "What if instead of replanning, your team could:\n"
+            + "\n".join([f"- {b}" for b in benefits[:3]])
+        )
+    e1_body_parts.append(
+        f"That's what {name} helps {req.target_audience} build.\n\n"
+        f"More on how in the next email. For now — does this sound like your Wednesday?"
+    )
+
+    email_1 = {
+        "day": 0,
+        "subject": "Your Wednesday problem",
+        "preview_text": "The schedule looked solid Monday. Then what?",
+        "body": "\n\n".join(e1_body_parts).strip(),
+    }
+
+    # --- Email 2: Mechanism/how (logic) ---
+    e2_openers = [
+        "So how does this actually work?",
+        "Let me explain.",
+        "Here's the mechanism.",
+    ]
+    e2_opener = _pick(e2_openers, seed + "e2o")
+
+    e2_body_parts = [
+        e2_opener,
+        (
+            f"Last email I described the Wednesday problem — the gap between "
+            f"the plan and the floor.\n\n"
+            f"{name} closes that gap. But not the way you'd expect."
+        ),
+        (
+            "We don't sell software. We implement it. The right APS for your "
+            "plant, integrated with your MES and ERP, built around your actual "
+            "constraints — not a vendor's idea of them."
+        ),
+    ]
+    if benefits[2:]:
+        e2_body_parts.append(
+            "In practice, that means:\n" + "\n".join([f"- {b}" for b in benefits[2:5]])
+        )
+    if objections:
+        obj = objections[0]
+        e2_body_parts.append(
+            f'You might be thinking: "{obj}"\n\n'
+            "Fair. That's why we start with your real constraints — not a generic demo."
+        )
+    e2_body_parts.append(
+        "Tomorrow I'll share what this looks like in practice — real results, real plants."
+    )
+
+    email_2 = {
+        "day": 2,
+        "subject": "How constraint-aware scheduling actually works",
+        "preview_text": f"{name} doesn't sell software. Here's what they do instead.",
+        "body": "\n\n".join(e2_body_parts).strip(),
+    }
+
+    # --- Email 3: Proof + CTA ---
+    e3_openers = [
+        "Numbers time.",
+        "Let's talk proof.",
+        "Here's the track record.",
+    ]
+    e3_opener = _pick(e3_openers, seed + "e3o")
+
+    e3_body_parts = [e3_opener]
+    if proof:
+        e3_body_parts.append(
+            "I said I'd share results. Here they are:\n"
+            + "\n".join([f"- {p}" for p in proof[:5]])
+        )
+    else:
+        e3_body_parts.append(
+            f"{name} has been doing this for 30+ years across 1000+ sites. "
+            "Not selling tools — implementing them, integrating them, and "
+            "making sure they stick."
+        )
+
+    if len(objections) > 1:
+        e3_body_parts.append(
+            f'One more thing you might be thinking: "{objections[1]}"\n\n'
+            "That's actually why we built managed services into every engagement. "
+            "We don't disappear after go-live."
+        )
+
+    e3_body_parts.append(
+        f"If any of this resonated, here's the next step:\n{req.cta}\n\n"
+        f"{req.offer_details}"
+    )
+    if req.guarantee_or_risk_reversal:
+        e3_body_parts.append(req.guarantee_or_risk_reversal)
+
+    email_3 = {
+        "day": 5,
+        "subject": _pick(
+            [
+                "The results (and a simple next step)",
+                "1000+ sites. Here's what they learned.",
+                "Proof, not promises",
+            ],
+            seed + "e3s",
+        ),
+        "preview_text": "Real results from real plants — and one frictionless next step.",
+        "body": "\n\n".join(e3_body_parts).strip(),
+    }
+
+    return {"emails": [email_1, email_2, email_3]}
+
+
 def template_linkedin_post(
     req: OTECopyRequest, brand: Dict[str, Any]
 ) -> Dict[str, Any]:
-    # Sugarman: short hook (pattern interrupt), then rhythm variation
-    hook = "Your schedule isn't the problem."
+    seed = _request_seed(req)
+    name = brand["brand_name"]
+
+    hook_patterns = [
+        "Your schedule isn't the problem.",
+        "Stop optimizing the plan. Start optimizing the constraint.",
+        "The best scheduling tool is the one your team actually uses.",
+        "Hot take: your APS implementation failed because of process, not software.",
+    ]
+    hook = _pick(hook_patterns, seed)
+
     body = (
         "The problem is what happens to it by Wednesday.\n\n"
         "Constraints shift. Priorities change. And suddenly your team is replanning "
@@ -510,13 +767,12 @@ def template_linkedin_post(
         "Truth is, chasing a perfect plan is a trap. What works is a plan your team "
         "can *keep using* when reality shows up.\n\n"
         "A quick litmus test:\n"
-        f"• Can you see today's binding constraint?\n"
-        f"• Are tradeoffs explicit (capacity vs. lead time vs. service)?\n"
-        f"• Is the next action obvious to the person doing the work?\n\n"
+        "• Can you see today's binding constraint?\n"
+        "• Are tradeoffs explicit (capacity vs. lead time vs. service)?\n"
+        "• Is the next action obvious to the person doing the work?\n\n"
         f"If not, that's the gap. And it's the exact problem "
-        f"{brand['brand_name']} helps {req.target_audience} close."
+        f"{name} helps {req.target_audience} close."
     )
-    # Sugarman: CTA should be frictionless and clear
     cta = f"Want a quick walkthrough? {req.cta}"
     return {"post": "\n\n".join([hook, body, cta]).strip()}
 
@@ -534,6 +790,11 @@ def generate_template(
     if req.asset_type == "email_single":
         out = template_email_single(req, brand)
         return out, out["body"]
+
+    if req.asset_type == "email_sequence":
+        out = template_email_sequence(req, brand)
+        all_bodies = " ".join([e["body"] for e in out["emails"]])
+        return out, all_bodies
 
     if req.asset_type == "linkedin_post":
         out = template_linkedin_post(req, brand)
@@ -757,6 +1018,58 @@ async def call_compatible(
         return data["choices"][0]["message"]["content"]
 
 
+async def call_anthropic(
+    messages: List[Dict[str, str]], model: str, temperature: float
+) -> str:
+    """Call the Anthropic Messages API directly via httpx."""
+    key = os.getenv("ANTHROPIC_API_KEY", "")
+    if not key:
+        raise RuntimeError(
+            "Missing ANTHROPIC_API_KEY. Set it in your environment or .env file."
+        )
+
+    # Separate the system message from user/assistant messages
+    system_text = ""
+    chat_messages = []
+    for msg in messages:
+        if msg["role"] == "system":
+            system_text = msg["content"]
+        else:
+            chat_messages.append({"role": msg["role"], "content": msg["content"]})
+
+    # Ensure we have at least one user message
+    if not chat_messages:
+        raise RuntimeError("No user message provided for Anthropic API call.")
+
+    payload: Dict[str, Any] = {
+        "model": model,
+        "max_tokens": 4096,
+        "temperature": temperature,
+        "messages": chat_messages,
+    }
+    if system_text:
+        payload["system"] = system_text
+
+    headers = {
+        "x-api-key": key,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
+    }
+
+    async with httpx.AsyncClient(timeout=90) as client:
+        r = await client.post(
+            "https://api.anthropic.com/v1/messages",
+            headers=headers,
+            json=payload,
+        )
+        r.raise_for_status()
+        data = r.json()
+        # Anthropic returns content as a list of blocks
+        content_blocks = data.get("content", [])
+        text_parts = [b["text"] for b in content_blocks if b.get("type") == "text"]
+        return "".join(text_parts)
+
+
 def parse_json(content: str) -> Dict[str, Any]:
     try:
         return json.loads(content)
@@ -777,6 +1090,8 @@ async def generate_llm(
 
     if req.provider == "ollama":
         content = await call_ollama(messages, req.model, req.temperature)
+    elif req.provider == "anthropic":
+        content = await call_anthropic(messages, req.model, req.temperature)
     else:
         content = await call_compatible(messages, req.model, req.temperature)
 
@@ -851,7 +1166,7 @@ if __name__ == "__main__":
         guarantee_or_risk_reversal=None,
         cta="Book a demo",
         provider=os.getenv("PROVIDER", "template"),
-        model=os.getenv("MODEL", "llama3.1"),
+        model=os.getenv("MODEL", "claude-sonnet-4-5-20250929"),
         temperature=float(os.getenv("TEMP", "0.6")),
     )
 
