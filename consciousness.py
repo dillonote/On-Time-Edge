@@ -12,6 +12,8 @@ a coherent identity when generating copy.
 
 from typing import Any, Dict
 
+from domain_knowledge import build_domain_context
+
 # ---------------------------------------------------------------------------
 # Core identity — who the bot *is*, not what it's told to do
 # ---------------------------------------------------------------------------
@@ -289,6 +291,13 @@ def build_consciousness(brand: Dict[str, Any]) -> str:
         ", ".join(voice_list) if voice_list else "confident, specific, ops-smart"
     )
 
+    # Build domain expertise context
+    domain_context = build_domain_context(
+        industry=None,  # Full knowledge, not industry-filtered
+        include_maturity=True,
+        include_objections=True,
+    )
+
     sections = [
         IDENTITY.format(brand_name=brand_name, identity=identity_text),
         f"Your voice: {voice_text}",
@@ -296,6 +305,7 @@ def build_consciousness(brand: Dict[str, Any]) -> str:
         READER_MODEL,
         DECISION_FRAMEWORK,
         CRAFT,
+        domain_context,
         ETHICS.format(brand_name=brand_name),
     ]
 

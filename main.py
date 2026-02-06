@@ -522,6 +522,20 @@ def template_landing_hero(req: OTECopyRequest, brand: Dict[str, Any]) -> Dict[st
     proof = req.proof_points[:3]
     proof_line = " | ".join(proof) if proof else ""
 
+    sections = [
+        {"type": "hero", "headline": headline, "subhead": subhead},
+        {"type": "benefits", "label": "Key Benefits", "bullets": bullets},
+    ]
+    if proof_line:
+        sections.append({"type": "social_proof", "label": "Proof", "text": proof_line})
+    sections.append(
+        {
+            "type": "cta_block",
+            "cta": {"text": req.cta, "style": "primary"},
+            "cta_secondary": {"text": "See how it works", "style": "secondary"},
+        }
+    )
+
     return {
         "headline": headline,
         "subhead": subhead,
@@ -529,6 +543,7 @@ def template_landing_hero(req: OTECopyRequest, brand: Dict[str, Any]) -> Dict[st
         "proof_line": proof_line,
         "cta": req.cta,
         "cta_secondary": "See how it works",
+        "sections": sections,
     }
 
 
@@ -581,33 +596,43 @@ def template_email_single(req: OTECopyRequest, brand: Dict[str, Any]) -> Dict[st
     ]
     bridge = _pick(bridge_patterns, seed + "bridge")
 
-    # --- Benefits block ---
+    # --- Preheader ---
+    preheader_patterns = [
+        f"Why {req.target_audience} replan every week — and how to stop.",
+        "The schedule looked solid Monday. Then what?",
+        f"What {name} sees across 1000+ scheduling implementations.",
+    ]
+    preheader = _pick(preheader_patterns, seed + "pre")
+
+    # --- Benefits ---
     benefit_intros = [
         "Here's what that looks like in practice:",
         "Specifically, here's what changes:",
         "What you'd walk away with:",
     ]
-    benefits = "\n".join([f"- {b}" for b in req.key_benefits[:5]])
-    benefits_block = _pick(benefit_intros, seed + "ben") + "\n" + benefits
+    benefit_intro = _pick(benefit_intros, seed + "ben")
+    benefits_list = req.key_benefits[:5]
+    benefits_flat = benefit_intro + "\n" + "\n".join([f"- {b}" for b in benefits_list])
 
-    # --- Proof block ---
-    proof_block = ""
+    # --- Proof ---
+    proof_intro = ""
+    proof_list: List[str] = []
+    proof_flat = ""
     if req.proof_points:
         proof_intros = [
             "And these aren't hypotheticals:",
             "This isn't theory:",
             "The track record:",
         ]
-        proof_block = (
-            _pick(proof_intros, seed + "proof")
-            + "\n"
-            + "\n".join([f"- {p}" for p in req.proof_points[:4]])
-        )
+        proof_intro = _pick(proof_intros, seed + "proof")
+        proof_list = req.proof_points[:4]
+        proof_flat = proof_intro + "\n" + "\n".join([f"- {p}" for p in proof_list])
 
-    # --- Objection handling: individual responses ---
-    objection_block = ""
+    # --- Objection handling ---
+    objection_items: List[Dict[str, str]] = []
+    objection_flat = ""
     if req.objections:
-        obj_parts = ["You might be thinking:\n"]
+        obj_flat_parts = ["You might be thinking:\n"]
         objection_responses = [
             "Fair. That's exactly why we start with your real constraints, not a generic demo.",
             "We hear that a lot. And honestly? Sometimes the existing tool is fine — it just needs better implementation. We'll tell you if that's the case.",
@@ -616,16 +641,18 @@ def template_email_single(req: OTECopyRequest, brand: Dict[str, Any]) -> Dict[st
         ]
         for i, obj in enumerate(req.objections[:3]):
             response = _pick(objection_responses, seed + f"obj{i}")
-            obj_parts.append(f'"{obj}"\n\n{response}')
-        objection_block = "\n\n".join(obj_parts)
+            objection_items.append({"objection": obj, "response": response})
+            obj_flat_parts.append(f'"{obj}"\n\n{response}')
+        objection_flat = "\n\n".join(obj_flat_parts)
 
     # --- Close ---
-    close_patterns = [
-        f"If this is worth exploring, the next step is simple:\n{req.cta}\n\n{req.offer_details}",
-        f"One step. No commitment:\n{req.cta}\n\n{req.offer_details}",
-        f"Here's the next move:\n{req.cta}\n\n{req.offer_details}",
+    close_intros = [
+        "If this is worth exploring, the next step is simple:",
+        "One step. No commitment:",
+        "Here's the next move:",
     ]
-    close = _pick(close_patterns, seed + "close")
+    close_intro = _pick(close_intros, seed + "close")
+    close_flat = f"{close_intro}\n{req.cta}\n\n{req.offer_details}"
 
     # --- P.S. line (Sugarman's second headline) ---
     ps_patterns = [
@@ -637,27 +664,79 @@ def template_email_single(req: OTECopyRequest, brand: Dict[str, Any]) -> Dict[st
         ps_patterns.append(f"P.S. {req.guarantee_or_risk_reversal}")
     ps = _pick(ps_patterns, seed + "ps")
 
-    parts = [opening, bridge, benefits_block]
-    if proof_block:
-        parts.append(proof_block)
-    if objection_block:
-        parts.append(objection_block)
-    parts.append(close)
+    # --- Assemble HubSpot-style sections ---
+    sections: List[Dict[str, Any]] = [
+        {"type": "preheader", "text": preheader},
+        {"type": "body_text", "label": "Opening", "content": opening},
+        {"type": "body_text", "label": "Bridge", "content": bridge},
+        {
+            "type": "benefits",
+            "label": "Key Benefits",
+            "intro": benefit_intro,
+            "bullets": benefits_list,
+        },
+    ]
+    if proof_list:
+        sections.append(
+            {
+                "type": "social_proof",
+                "label": "Proof Points",
+                "intro": proof_intro,
+                "proof_points": proof_list,
+            }
+        )
+    if objection_items:
+        sections.append(
+            {
+                "type": "objection_handling",
+                "label": "Addressing Concerns",
+                "items": objection_items,
+            }
+        )
+    sections.append(
+        {
+            "type": "cta_block",
+            "label": "Next Step",
+            "intro": close_intro,
+            "cta": {"text": req.cta, "style": "primary"},
+            "supporting_text": req.offer_details,
+        }
+    )
     if ps:
-        parts.append(ps)
+        sections.append({"type": "ps_line", "label": "P.S.", "text": ps})
+    sections.append(
+        {
+            "type": "footer",
+            "company": name,
+            "tagline": brand.get("tagline", ""),
+        }
+    )
+
+    # Flat body for slippery-slide scoring
+    flat_parts = [opening, bridge, benefits_flat]
+    if proof_flat:
+        flat_parts.append(proof_flat)
+    if objection_flat:
+        flat_parts.append(objection_flat)
+    flat_parts.append(close_flat)
+    if ps:
+        flat_parts.append(ps)
 
     return {
         "subject": subject,
-        "body": "\n\n".join(parts).strip(),
+        "preheader": preheader,
+        "sections": sections,
+        "body": "\n\n".join(flat_parts).strip(),
     }
 
 
 def template_email_sequence(
     req: OTECopyRequest, brand: Dict[str, Any]
 ) -> Dict[str, Any]:
-    """Generate a 3-email sequence: problem, mechanism, proof+CTA."""
+    """Generate a 3-email sequence with HubSpot-style sections per email."""
     seed = _request_seed(req)
     name = brand["brand_name"]
+    tagline = brand.get("tagline", "")
     benefits = req.key_benefits
     proof = req.proof_points
     objections = req.objections
@@ -670,29 +749,49 @@ def template_email_sequence(
     ]
     e1_opener = _pick(e1_openers, seed + "e1o")
 
-    e1_body_parts = [
-        e1_opener,
-        (
-            "The schedule looked solid Monday morning. By Wednesday, three things "
-            "changed and your team is back to firefighting.\n\n"
-            "It's not a planning problem. It's a constraints problem. The plan "
-            "doesn't account for what actually happens on the floor."
-        ),
+    e1_problem = (
+        "The schedule looked solid Monday morning. By Wednesday, three things "
+        "changed and your team is back to firefighting.\n\n"
+        "It's not a planning problem. It's a constraints problem. The plan "
+        "doesn't account for what actually happens on the floor."
+    )
+    e1_close = (
+        f"That's what {name} helps {req.target_audience} build.\n\n"
+        f"More on how in the next email. For now — does this sound like your Wednesday?"
+    )
+
+    e1_sections: List[Dict[str, Any]] = [
+        {"type": "preheader", "text": "The schedule looked solid Monday. Then what?"},
+        {"type": "body_text", "label": "Opening", "content": e1_opener},
+        {"type": "body_text", "label": "Problem", "content": e1_problem},
     ]
+    e1_body_parts = [e1_opener, e1_problem]
+
     if benefits:
+        e1_sections.append(
+            {
+                "type": "benefits",
+                "label": "What Changes",
+                "intro": "What if instead of replanning, your team could:",
+                "bullets": benefits[:3],
+            }
+        )
         e1_body_parts.append(
             "What if instead of replanning, your team could:\n"
             + "\n".join([f"- {b}" for b in benefits[:3]])
         )
-    e1_body_parts.append(
-        f"That's what {name} helps {req.target_audience} build.\n\n"
-        f"More on how in the next email. For now — does this sound like your Wednesday?"
+
+    e1_sections.append(
+        {"type": "body_text", "label": "Transition", "content": e1_close}
     )
+    e1_sections.append({"type": "footer", "company": name, "tagline": tagline})
+    e1_body_parts.append(e1_close)
 
     email_1 = {
         "day": 0,
         "subject": "Your Wednesday problem",
         "preview_text": "The schedule looked solid Monday. Then what?",
+        "sections": e1_sections,
         "body": "\n\n".join(e1_body_parts).strip(),
     }
 
@@ -704,37 +803,70 @@ def template_email_sequence(
     ]
     e2_opener = _pick(e2_openers, seed + "e2o")
 
-    e2_body_parts = [
-        e2_opener,
-        (
-            f"Last email I described the Wednesday problem — the gap between "
-            f"the plan and the floor.\n\n"
-            f"{name} closes that gap. But not the way you'd expect."
-        ),
-        (
-            "We don't sell software. We implement it. The right APS for your "
-            "plant, integrated with your MES and ERP, built around your actual "
-            "constraints — not a vendor's idea of them."
-        ),
+    e2_context = (
+        f"Last email I described the Wednesday problem — the gap between "
+        f"the plan and the floor.\n\n"
+        f"{name} closes that gap. But not the way you'd expect."
+    )
+    e2_mechanism = (
+        "We don't sell software. We implement it. The right APS for your "
+        "plant, integrated with your MES and ERP, built around your actual "
+        "constraints — not a vendor's idea of them."
+    )
+    e2_close = (
+        "Tomorrow I'll share what this looks like in practice "
+        "— real results, real plants."
+    )
+
+    e2_sections: List[Dict[str, Any]] = [
+        {
+            "type": "preheader",
+            "text": f"{name} doesn't sell software. Here's what they do instead.",
+        },
+        {"type": "body_text", "label": "Opening", "content": e2_opener},
+        {"type": "body_text", "label": "Context", "content": e2_context},
+        {"type": "body_text", "label": "Mechanism", "content": e2_mechanism},
     ]
+    e2_body_parts = [e2_opener, e2_context, e2_mechanism]
+
     if benefits[2:]:
+        e2_sections.append(
+            {
+                "type": "benefits",
+                "label": "In Practice",
+                "intro": "In practice, that means:",
+                "bullets": benefits[2:5],
+            }
+        )
         e2_body_parts.append(
             "In practice, that means:\n" + "\n".join([f"- {b}" for b in benefits[2:5]])
         )
+
     if objections:
         obj = objections[0]
-        e2_body_parts.append(
-            f'You might be thinking: "{obj}"\n\n'
+        obj_response = (
             "Fair. That's why we start with your real constraints — not a generic demo."
         )
-    e2_body_parts.append(
-        "Tomorrow I'll share what this looks like in practice — real results, real plants."
+        e2_sections.append(
+            {
+                "type": "objection_handling",
+                "label": "Addressing Concerns",
+                "items": [{"objection": obj, "response": obj_response}],
+            }
+        )
+        e2_body_parts.append(f'You might be thinking: "{obj}"\n\n{obj_response}')
+
+    e2_sections.append(
+        {"type": "body_text", "label": "Transition", "content": e2_close}
     )
+    e2_sections.append({"type": "footer", "company": name, "tagline": tagline})
+    e2_body_parts.append(e2_close)
 
     email_2 = {
         "day": 2,
         "subject": "How constraint-aware scheduling actually works",
         "preview_text": f"{name} doesn't sell software. Here's what they do instead.",
+        "sections": e2_sections,
         "body": "\n\n".join(e2_body_parts).strip(),
     }
 
@@ -746,32 +878,79 @@ def template_email_sequence(
     ]
     e3_opener = _pick(e3_openers, seed + "e3o")
 
+    e3_sections: List[Dict[str, Any]] = [
+        {
+            "type": "preheader",
+            "text": "Real results from real plants — and one frictionless next step.",
+        },
+        {"type": "body_text", "label": "Opening", "content": e3_opener},
+    ]
     e3_body_parts = [e3_opener]
+
     if proof:
+        proof_intro = "I said I'd share results. Here they are:"
+        e3_sections.append(
+            {
+                "type": "social_proof",
+                "label": "Results",
+                "intro": proof_intro,
+                "proof_points": proof[:5],
+            }
+        )
         e3_body_parts.append(
-            "I said I'd share results. Here they are:\n"
-            + "\n".join([f"- {p}" for p in proof[:5]])
+            proof_intro + "\n" + "\n".join([f"- {p}" for p in proof[:5]])
         )
     else:
-        e3_body_parts.append(
+        fallback = (
             f"{name} has been doing this for 30+ years across 1000+ sites. "
             "Not selling tools — implementing them, integrating them, and "
             "making sure they stick."
         )
+        e3_sections.append(
+            {"type": "body_text", "label": "Track Record", "content": fallback}
+        )
+        e3_body_parts.append(fallback)
 
     if len(objections) > 1:
+        obj2 = objections[1]
+        obj2_response = (
+            "That's actually why we built managed services into every "
+            "engagement. We don't disappear after go-live."
+        )
+        e3_sections.append(
+            {
+                "type": "objection_handling",
+                "label": "One More Thing",
+                "items": [{"objection": obj2, "response": obj2_response}],
+            }
+        )
         e3_body_parts.append(
-            f'One more thing you might be thinking: "{objections[1]}"\n\n'
-            "That's actually why we built managed services into every engagement. "
-            "We don't disappear after go-live."
+            f'One more thing you might be thinking: "{obj2}"\n\n{obj2_response}'
         )
 
-    e3_body_parts.append(
-        f"If any of this resonated, here's the next step:\n{req.cta}\n\n"
-        f"{req.offer_details}"
+    cta_intro = "If any of this resonated, here's the next step:"
+    e3_sections.append(
+        {
+            "type": "cta_block",
+            "label": "Next Step",
+            "intro": cta_intro,
+            "cta": {"text": req.cta, "style": "primary"},
+            "supporting_text": req.offer_details,
+        }
     )
+    e3_body_parts.append(f"{cta_intro}\n{req.cta}\n\n{req.offer_details}")
+
     if req.guarantee_or_risk_reversal:
+        e3_sections.append(
+            {
+                "type": "ps_line",
+                "label": "Guarantee",
+                "text": req.guarantee_or_risk_reversal,
+            }
+        )
         e3_body_parts.append(req.guarantee_or_risk_reversal)
+
+    e3_sections.append({"type": "footer", "company": name, "tagline": tagline})
 
     email_3 = {
         "day": 5,
@@ -784,6 +963,7 @@ def template_email_sequence(
             seed + "e3s",
         ),
         "preview_text": "Real results from real plants — and one frictionless next step.",
+        "sections": e3_sections,
         "body": "\n\n".join(e3_body_parts).strip(),
     }
 
@@ -839,7 +1019,9 @@ def generate_template(
     if req.asset_type == "landing_hero":
         out = template_landing_hero(req, brand)
         text_for_score = " ".join(
-            [str(v) for v in out.values() if isinstance(v, (str, list))]
+            [out.get("headline", ""), out.get("subhead", "")]
+            + out.get("bullets", [])
+            + [out.get("proof_line", "")]
         )
         return out, text_for_score, _build_variant_key("landing_hero", out, seed)
 
