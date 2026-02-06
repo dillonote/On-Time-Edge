@@ -9,6 +9,12 @@ from fastapi import FastAPI
 from pydantic import BaseModel, Field
 
 from consciousness import build_consciousness
+from learning import (
+    log_generation,
+    record_feedback,
+    top_examples,
+    get_insights,
+)
 
 Provider = Literal["template", "ollama", "compatible", "anthropic"]
 AssetType = Literal[
@@ -284,6 +290,17 @@ class OTECopyResponse(BaseModel):
     content: Dict[str, Any]
     warnings: List[str]
     slippery_score: float
+    generation_id: Optional[int] = Field(
+        default=None, description="ID for submitting feedback on this generation."
+    )
+
+
+class FeedbackRequest(BaseModel):
+    generation_id: int = Field(..., description="ID returned by /generate.")
+    rating: int = Field(..., ge=1, le=5, description="1 (poor) to 5 (excellent).")
+    feedback: Optional[str] = Field(
+        default=None, description="Optional notes on what worked or didn't."
+    )
 
 
 # ----------------------------
@@ -431,10 +448,37 @@ def lint_copy(
 # ----------------------------
 # Template variation helpers
 # ----------------------------
-def _pick(options: list, seed: str) -> Any:
-    """Deterministically pick from a list based on a seed string."""
+def _pick(options: list, seed: str, scores: Optional[Dict[str, float]] = None) -> Any:
+    """
+    Pick from a list, preferring options that have performed well.
+
+    If scores is provided and contains variant data for any option index,
+    prefer higher-rated options.  Otherwise fall back to deterministic
+    hash-based selection.
+    """
+    if scores:
+        # Check if any option index has feedback data in the scores dict
+        rated = {}
+        for i in range(len(options)):
+            # Look for variant keys containing this index
+            for key, avg in scores.items():
+                if f":{i}" in key:
+                    rated[i] = max(rated.get(i, 0), avg)
+
+        if rated:
+            # Pick the highest-rated option that matches
+            best_idx = max(rated, key=rated.get)
+            return options[best_idx]
+
+    # Default: deterministic hash-based selection
     idx = int(hashlib.md5(seed.encode()).hexdigest(), 16) % len(options)
     return options[idx]
+
+
+def _pick_idx(options: list, seed: str) -> Tuple[Any, int]:
+    """Pick from a list and return (value, index) for variant tracking."""
+    idx = int(hashlib.md5(seed.encode()).hexdigest(), 16) % len(options)
+    return options[idx], idx
 
 
 def _request_seed(req: OTECopyRequest) -> str:
@@ -777,28 +821,40 @@ def template_linkedin_post(
     return {"post": "\n\n".join([hook, body, cta]).strip()}
 
 
+def _build_variant_key(asset_type: str, content: Dict[str, Any], seed: str) -> str:
+    """Build a variant key from the output content for tracking."""
+    # Hash the content to create a stable fingerprint of which variant was chosen
+    content_hash = hashlib.md5(
+        json.dumps(content, sort_keys=True, ensure_ascii=False).encode()
+    ).hexdigest()[:8]
+    return f"{asset_type}|{seed[:32]}|{content_hash}"
+
+
 def generate_template(
     req: OTECopyRequest, brand: Dict[str, Any]
-) -> Tuple[Dict[str, Any], str]:
+) -> Tuple[Dict[str, Any], str, str]:
+    """Returns (content_dict, text_for_scoring, variant_key)."""
+    seed = _request_seed(req)
+
     if req.asset_type == "landing_hero":
         out = template_landing_hero(req, brand)
         text_for_score = " ".join(
             [str(v) for v in out.values() if isinstance(v, (str, list))]
         )
-        return out, text_for_score
+        return out, text_for_score, _build_variant_key("landing_hero", out, seed)
 
     if req.asset_type == "email_single":
         out = template_email_single(req, brand)
-        return out, out["body"]
+        return out, out["body"], _build_variant_key("email_single", out, seed)
 
     if req.asset_type == "email_sequence":
         out = template_email_sequence(req, brand)
         all_bodies = " ".join([e["body"] for e in out["emails"]])
-        return out, all_bodies
+        return out, all_bodies, _build_variant_key("email_sequence", out, seed)
 
     if req.asset_type == "linkedin_post":
         out = template_linkedin_post(req, brand)
-        return out, out["post"]
+        return out, out["post"], _build_variant_key("linkedin_post", out, seed)
 
     # Minimal fallback for other asset types:
     out = {
@@ -810,7 +866,7 @@ def generate_template(
     text_for_score = " ".join(
         [out.get("headline", ""), out.get("body", ""), out.get("cta", "")]
     )
-    return out, text_for_score
+    return out, text_for_score, _build_variant_key(req.asset_type, out, seed)
 
 
 # ----------------------------
@@ -1080,12 +1136,36 @@ def parse_json(content: str) -> Dict[str, Any]:
         return json.loads(m.group(0))
 
 
+def _build_few_shot_block(asset_type: str) -> str:
+    """Build a few-shot examples block from top-rated past generations."""
+    examples = top_examples(asset_type, limit=2, min_rating=4)
+    if not examples:
+        return ""
+
+    parts = ["\n=== EXAMPLES THAT SCORED WELL (learn from these) ===\n"]
+    for i, ex in enumerate(examples, 1):
+        resp = ex["response"]
+        content = resp.get("content", {})
+        parts.append(
+            f"Example {i} (rating: {ex['rating']}/5, "
+            f"slippery: {ex['slippery_score']}):\n"
+            f"{json.dumps(content, ensure_ascii=False, indent=2)}\n"
+        )
+    return "\n".join(parts)
+
+
 async def generate_llm(
     req: OTECopyRequest, brand: Dict[str, Any]
 ) -> Tuple[Dict[str, Any], str]:
+    # Build user prompt with few-shot examples from learning store
+    user_prompt = build_user_prompt(req)
+    few_shot = _build_few_shot_block(req.asset_type)
+    if few_shot:
+        user_prompt = user_prompt + "\n" + few_shot
+
     messages = [
         {"role": "system", "content": build_system_prompt(brand)},
-        {"role": "user", "content": build_user_prompt(req)},
+        {"role": "user", "content": user_prompt},
     ]
 
     if req.provider == "ollama":
@@ -1112,21 +1192,56 @@ app = FastAPI(title="On Time Edge Copy Bot", version="1.0")
 async def generate(req: OTECopyRequest):
     brand = load_brand_profile()
 
+    variant_key = None
     if req.provider == "template":
-        copy_obj, score_text = generate_template(req, brand)
+        copy_obj, score_text, variant_key = generate_template(req, brand)
     else:
         copy_obj, score_text = await generate_llm(req, brand)
 
     # Lint all string content we can find
     flat_text = score_text
     warnings = lint_copy(flat_text, brand, req)
+    score = slippery_score(flat_text)
+
+    # Log to learning store
+    request_dict = req.model_dump()
+    response_dict = {"asset_type": req.asset_type, "content": copy_obj}
+    gen_id = log_generation(
+        asset_type=req.asset_type,
+        request_dict=request_dict,
+        response_dict=response_dict,
+        slippery_score=score,
+        variant_key=variant_key,
+    )
 
     return OTECopyResponse(
         asset_type=req.asset_type,
         content=copy_obj,
         warnings=warnings,
-        slippery_score=slippery_score(flat_text),
+        slippery_score=score,
+        generation_id=gen_id,
     )
+
+
+@app.post("/feedback")
+async def submit_feedback(fb: FeedbackRequest):
+    """Rate a generation 1-5. The bot learns from this over time."""
+    ok = record_feedback(fb.generation_id, fb.rating, fb.feedback)
+    if not ok:
+        return {
+            "status": "error",
+            "message": f"Generation {fb.generation_id} not found.",
+        }
+    return {
+        "status": "ok",
+        "message": f"Recorded rating {fb.rating}/5 for generation {fb.generation_id}.",
+    }
+
+
+@app.get("/insights")
+async def insights():
+    """See what the bot has learned: ratings, top variants, trends."""
+    return get_insights()
 
 
 # ----------------------------
