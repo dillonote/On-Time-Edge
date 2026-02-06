@@ -702,6 +702,98 @@ DIGITAL_TRANSFORMATION: Dict[str, str] = {
 
 
 # ---------------------------------------------------------------------------
+# Customer results — real metrics from OTE + PlanetTogether implementations
+# ---------------------------------------------------------------------------
+CUSTOMER_RESULTS: Dict[str, List[Dict[str, str]]] = {
+    "changeover_reductions": [
+        {"industry": "Beverage", "result": "Reduced changeover and setup time by 30%"},
+        {"industry": "CPG", "result": "25% increase in throughput"},
+        {"industry": "Food Production", "result": "30% reduction in changeovers"},
+    ],
+    "scheduler_productivity": [
+        {
+            "industry": "Printing & Packaging",
+            "result": (
+                "Schedulers spending 50% of their work week on scheduling — "
+                "reduced scheduling time by 96% and increased adjustment speed by 50%"
+            ),
+        },
+        {
+            "industry": "Food Production",
+            "result": (
+                "Went from hours of manual scheduling to a feasible schedule in minutes. "
+                "Increased schedule accuracy by 90%"
+            ),
+        },
+        {
+            "industry": "Mobility",
+            "result": (
+                "Scheduling time reduced from several hours per week to 15 minutes. "
+                "PlanetTogether achieved full ROI within six months"
+            ),
+        },
+        {"industry": "Beverage", "result": "Scheduling time reduced by 50%"},
+        {
+            "industry": "Industrial Machines",
+            "result": (
+                "Manual reporting time reduced from 1.5 hours to near-instantaneous "
+                "by eliminating multi-file downloads for stock and production status"
+            ),
+        },
+    ],
+    "otd_improvements": [
+        {"industry": "Beverage", "result": "Reduced late jobs by more than 20%"},
+    ],
+    "ctp_business_growth": [
+        {"industry": "CPG", "result": "60% reduction in order lead time"},
+        {
+            "industry": "High-Tech",
+            "result": "Improved promised shipment dates by 8% and production output increased by 16%",
+        },
+        {
+            "industry": "Food Production",
+            "result": "20% increase in sales within existing environment",
+        },
+    ],
+    "inventory_reduction": [
+        {"industry": "Life Sciences", "result": "15% reduction in inventory overhead"},
+    ],
+    "labor_cost_impact": [
+        {
+            "industry": "CPG",
+            "result": "50% reduction in operating expenses due to overtime and expedited freight",
+        },
+        {
+            "industry": "Printing & Packaging",
+            "result": "6% labor efficiency increase and 2% reduction in waste",
+        },
+        {
+            "industry": "Life Sciences",
+            "result": "20% reduction in overtime labor expenses",
+        },
+    ],
+    "oee_improvements": [
+        {
+            "industry": "Printing & Packaging",
+            "result": "6% reduction in unit cost due to increased OEE",
+        },
+        {"industry": "CPG", "result": "30% improvement in asset utilization"},
+        {"industry": "Food Production", "result": "25% increase in production output"},
+    ],
+}
+
+# Press release headline metrics (Beyond Connectivity theme)
+ACCOUNTABLE_SCHEDULING_METRICS: Dict[str, str] = {
+    "otif": "OTIF improvements of 5 to 15 points",
+    "expediting": "Reductions in expediting and premium freight of 20% to 50%",
+    "throughput": "Throughput and capacity realization gains of 5% to 10% without new assets",
+    "wip": "WIP and buffer inventory reductions of 10% to 30%",
+    "recovery": "Recovery time from disruption reduced from days to hours",
+    "decision_latency": "Material reductions in decision latency to reach a trusted, executable schedule",
+}
+
+
+# ---------------------------------------------------------------------------
 # Assembly function — build the full domain context for prompts
 # ---------------------------------------------------------------------------
 def build_domain_context(

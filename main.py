@@ -162,6 +162,45 @@ DEFAULT_BRAND_PROFILE: Dict[str, Any] = {
         "Named clients include Lockheed Martin, Chrysler, Del Monte, Bemis Manufacturing, Delta Faucet, Universal Studios",
         "Manufacturing Scheduling Summit 2025 — inaugural industry event featuring CESMII CEO keynote",
     ],
+    "hannover_messe_2026": {
+        "theme": "Beyond Connectivity: Accountable Scheduling for Enterprise Gains",
+        "location": "Hall 15, Stand G66",
+        "dates": "April 20-24, 2026",
+        "partner": "PlanetTogether",
+        "core_message": (
+            "Connectivity is no longer the problem — performance accountability is. "
+            "Most manufacturers are connected. Very few are execution-ready. "
+            "Accountable scheduling treats the production schedule as an execution-ready, "
+            "continuously accountable control mechanism — not just a planning exercise."
+        ),
+        "ted_recio_quote": (
+            "Advanced planning and scheduling creates enterprise-level value when it "
+            "changes day-to-day decisions on the shop floor and in operations."
+        ),
+        "brian_vogel_quote": (
+            "What we see in plant after plant is that schedules break because they "
+            "aren't anchored in how the operation actually runs. When scheduling becomes "
+            "an execution discipline, you stop managing around the plan and start "
+            "managing through it."
+        ),
+        "headline_metrics": [
+            "OTIF improvements of 5 to 15 points",
+            "Reductions in expediting and premium freight of 20% to 50%",
+            "Throughput and capacity realization gains of 5% to 10% without new assets",
+            "WIP and buffer inventory reductions of 10% to 30%",
+            "Recovery time from disruption reduced from days to hours",
+        ],
+    },
+    "customer_results": [
+        "Beverage: Changeover/setup time reduced 30%, scheduling time reduced 50%, late jobs reduced 20%+",
+        "CPG: 25% throughput increase, 60% order lead time reduction, 50% opex reduction (overtime/freight), 30% asset utilization improvement",
+        "Food Production: 30% changeover reduction, hours of scheduling → minutes, 90% schedule accuracy increase, 20% sales increase, 25% production output increase",
+        "Printing & Packaging: 96% scheduling time reduction, 50% faster adjustments, 6% labor efficiency increase, 2% waste reduction, 6% unit cost reduction via OEE",
+        "Mobility: Scheduling reduced from hours/week to 15 min, full ROI in 6 months",
+        "High-Tech: Promised shipment dates improved 8%, production output increased 16%",
+        "Life Sciences: 15% inventory overhead reduction, 20% overtime labor expense reduction",
+        "Industrial Machines: Manual reporting from 1.5 hours to near-instantaneous",
+    ],
     "milestones": [
         "2004 — Michel Babineau founds On-Time Edge",
         "2015 — Aaron Muhl founds Toward Zero",
@@ -173,6 +212,7 @@ DEFAULT_BRAND_PROFILE: Dict[str, Any] = {
         "Nov 2025 — Inaugural Manufacturing Scheduling Summit in Philadelphia",
         "Jan 2026 — Fuuz (MFGx) strategic partnership announced",
         "Jan 2026 — Brian Lindenmeyer appointed VP Strategy & Partnerships for Kinaxis expansion",
+        "April 2026 — Joint exhibition with PlanetTogether at Hannover Messe 2026 (Hall 15, Stand G66)",
     ],
     "do_not_say": [
         "IED-Net",
