@@ -190,6 +190,10 @@ DEFAULT_BRAND_PROFILE: Dict[str, Any] = {
             "WIP and buffer inventory reductions of 10% to 30%",
             "Recovery time from disruption reduced from days to hours",
         ],
+        "ticket_offer": (
+            "Complimentary Hannover Messe passes available for manufacturing "
+            "leaders who book a meeting at the booth. Free tickets — on us."
+        ),
     },
     "customer_results": [
         "Beverage: Changeover/setup time reduced 30%, scheduling time reduced 50%, late jobs reduced 20%+",

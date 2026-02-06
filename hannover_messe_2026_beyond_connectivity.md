@@ -68,9 +68,11 @@ If you're already connected and still missing targets, this conversation will be
 
 No pitch deck. A diagnostic conversation about what's actually breaking between your plan and your floor.
 
+Need a ticket? It's on us. We have complimentary passes for manufacturing leaders who want to meet at the booth. Just reply or book a meeting and we'll send one over.
+
 **[ps_line]**
 
-P.S. "Connectivity solved a real problem over the last decade, but it didn't solve the manufacturing enterprise performance problem." — Brian Vogel, CEO, On Time Edge
+P.S. "Connectivity solved a real problem over the last decade, but it didn't solve the manufacturing enterprise performance problem." — Brian Vogel, CEO, On Time Edge. And if a ticket is the only thing between you and Hannover, we'll take care of that too.
 
 **[footer]**
 On Time Edge × PlanetTogether | Hannover Messe 2026 | Hall 15, Stand G66
@@ -83,7 +85,8 @@ On Time Edge × PlanetTogether | Hannover Messe 2026 | Hall 15, Stand G66
 - Specificity: real metrics, real industries ✓
 - Credibility: CEO quote, customer data ✓
 - Low-friction CTA: meeting, not a demo ✓
-- P.S. as second headline ✓
+- Risk reversal: free ticket offer removes last barrier ✓
+- P.S. as second headline + ticket reminder ✓
 
 ---
 
@@ -145,6 +148,8 @@ Hannover Messe. Hall 15, Stand G66. April 20–24.
 
 We'll walk through how this applies to your specific environment — not a generic demo. Bring your constraint. We'll show you what changes.
 
+Still need a Hannover ticket? We've got complimentary passes — just let us know when you book your meeting.
+
 **[ps_line]**
 
 P.S. "Advanced planning and scheduling creates enterprise-level value when it changes day-to-day decisions on the shop floor and in operations." — Ted Recio, COO, PlanetTogether
@@ -160,6 +165,7 @@ On Time Edge × PlanetTogether | Hannover Messe 2026 | Hall 15, Stand G66
 - Specific customer results with numbers ✓
 - Objection handling preempts resistance ✓
 - CTA personalized (bring your constraint) ✓
+- Complimentary ticket offer reinforced ✓
 - Ted Recio quote as P.S. ✓
 
 ---
@@ -229,9 +235,11 @@ One week until Hannover Messe. Hall 15, Stand G66.
 
 Tell us your industry, your constraint, and your current scheduling pain point. We'll bring the relevant case data and a straight answer on what's achievable.
 
+Don't have a ticket yet? We have a limited number of complimentary passes. Reply "ticket" and we'll get one to you before the doors open.
+
 **[ps_line]**
 
-P.S. Not attending Hannover? Reply with your top scheduling challenge — we'll send you the one-page breakdown of what we've seen work in your industry.
+P.S. Not planning to attend Hannover? Two options: reply with your top scheduling challenge and we'll send a one-page breakdown of what we've seen work in your industry. Or reply "ticket" — a free pass might change your mind.
 
 **[footer]**
 On Time Edge × PlanetTogether | Hannover Messe 2026 | Hall 15, Stand G66
@@ -243,7 +251,8 @@ On Time Edge × PlanetTogether | Hannover Messe 2026 | Hall 15, Stand G66
 - Organized by outcome category, not company name ✓
 - "No new capital" pattern break ✓
 - Personalized CTA (tell us your industry) ✓
-- Fallback for non-attendees in P.S. ✓
+- "Reply ticket" — one-word action lowers response friction ✓
+- P.S. dual-path: industry breakdown OR free ticket ✓
 - Every metric sourced from real customers ✓
 
 ---
@@ -286,11 +295,11 @@ Stop by for:
 
 No appointment needed. Walk up, tell us your constraint, and we'll tell you what we've seen work.
 
-If you've already booked a meeting, we'll see you at your scheduled time.
+If you've already booked a meeting, we'll see you at your scheduled time. If you're in Hannover and still need a pass — reply now. We have complimentary tickets and can get you in today.
 
 **[ps_line]**
 
-P.S. Ask us about the CPG company that cut operating expenses 50% — or the scheduler who got 96% of their week back. Both stories are worth hearing.
+P.S. Ask us about the CPG company that cut operating expenses 50% — or the scheduler who got 96% of their week back. Both stories are worth hearing. Your ticket's on us if you need one.
 
 **[footer]**
 On Time Edge × PlanetTogether | Hannover Messe 2026 | Hall 15, Stand G66
@@ -302,7 +311,8 @@ On Time Edge × PlanetTogether | Hannover Messe 2026 | Hall 15, Stand G66
 - Reiterates the provocative theme ✓
 - Specific booth number repeated ✓
 - Walk-up-friendly CTA lowers barrier ✓
-- Metric-driven P.S. creates curiosity ✓
+- Last-minute ticket offer for day-of urgency ✓
+- Metric-driven P.S. + ticket reminder ✓
 
 ---
 
@@ -467,7 +477,7 @@ On Time Edge × PlanetTogether | Beyond Connectivity
 - **Curiosity seeds:** "Here's the pattern..." / "Notice what's not in that list..." / "One question."
 - **Specificity:** Real metrics from real customers — never rounded or vague.
 - **Objection inoculation:** Emails 2 and 6 preempt "tried APS" and "too variable" resistance.
-- **Risk reversal:** "If it's not right, we'll tell you" / "Not a pitch, a diagnostic."
+- **Risk reversal:** "If it's not right, we'll tell you" / "Not a pitch, a diagnostic." / Complimentary Hannover tickets remove the last barrier to showing up.
 - **P.S. as second headline:** Every P.S. carries a standalone hook (CEO quote, metric, fallback CTA).
 - **Rhythm:** Short sentences open. Long sentences carry the mechanism. Short sentences close.
 
