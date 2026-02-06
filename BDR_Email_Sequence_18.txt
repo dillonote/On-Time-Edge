@@ -1,0 +1,453 @@
+On Time Edge — 18-Email BDR Outreach Sequence
+═══════════════════════════════════════════════════════════════════════════
+
+Cadence: 18 emails over ~45 days. Mix with calls and LinkedIn touches.
+Tone: One person writing to one person. Short. Direct. No fluff.
+
+
+───────────────────────────────────────────────────────────────────────────
+EMAIL 1 — DAY 1 | THE WEDNESDAY QUESTION
+───────────────────────────────────────────────────────────────────────────
+
+Subject: quick question about your schedule
+
+{{First Name}},
+
+When your schedule breaks mid-week — and it does — does your team
+recover from it or despite it?
+
+If it's "despite it," you're not alone. That's the pattern we see in
+most plants we walk into.
+
+Worth a 15-minute conversation?
+
+— {{BDR Name}}, On Time Edge
+
+
+───────────────────────────────────────────────────────────────────────────
+EMAIL 2 — DAY 3 | THE PATTERN
+───────────────────────────────────────────────────────────────────────────
+
+Subject: the pattern we keep seeing
+
+{{First Name}},
+
+Monday the schedule looks solid. By Wednesday three things changed.
+By Friday your team has replanned twice and expedited something that
+wasn't supposed to ship until next week.
+
+That's not a planning problem. It's a constraints problem — the plan
+doesn't account for what actually happens on the floor.
+
+We help manufacturers fix that. 1000+ sites, 30+ years.
+
+Open to a quick call?
+
+— {{BDR Name}}
+
+
+───────────────────────────────────────────────────────────────────────────
+EMAIL 3 — DAY 6 | THE COST
+───────────────────────────────────────────────────────────────────────────
+
+Subject: what bad scheduling actually costs
+
+{{First Name}},
+
+Quick math: overtime hours + expedited freight + late delivery penalties
++ scrap from rushed changeovers + orders you turned down because you
+couldn't confirm capacity.
+
+For most mid-market manufacturers that number is 6–10x the annual cost
+of fixing the schedule.
+
+We've helped a CPG company cut those costs 50%. A beverage manufacturer
+reduced late jobs 20%+. Happy to share what we've seen in
+{{Industry}}.
+
+— {{BDR Name}}
+
+
+───────────────────────────────────────────────────────────────────────────
+EMAIL 4 — DAY 9 | THE SCHEDULER
+───────────────────────────────────────────────────────────────────────────
+
+Subject: your scheduler's week
+
+{{First Name}},
+
+I talk to schedulers every day. Most of them spend half their week
+rebuilding the schedule that broke the day before.
+
+One of our customers — printing and packaging — reduced that time by
+96%. Their scheduler went from 50% of the week on scheduling to almost
+none.
+
+Not because we replaced the scheduler. Because we gave them a schedule
+worth trusting.
+
+15 minutes to see if that applies to your plant?
+
+— {{BDR Name}}
+
+
+───────────────────────────────────────────────────────────────────────────
+EMAIL 5 — DAY 12 | THE DISTINCTION
+───────────────────────────────────────────────────────────────────────────
+
+Subject: connected ≠ execution-ready
+
+{{First Name}},
+
+Your systems probably talk to each other. ERP to MES. APS to the floor.
+
+But can your team run the business against today's schedule — right now,
+as conditions stand?
+
+That's the gap. Connected isn't the same as execution-ready. Most plants
+have the first. Almost none have the second.
+
+That's what we fix.
+
+— {{BDR Name}}
+
+
+───────────────────────────────────────────────────────────────────────────
+EMAIL 6 — DAY 14 | PROOF — FOOD PRODUCTION
+───────────────────────────────────────────────────────────────────────────
+
+Subject: 20% more sales, same plant
+
+{{First Name}},
+
+A food production customer came to us doing hours of manual scheduling
+every day. Feasible schedule in minutes now. 90% accuracy improvement.
+
+But here's the number that got their CFO's attention: 20% sales increase
+within the existing environment. No new lines. No new plant. Just a
+schedule that actually worked.
+
+Worth exploring whether something similar applies to {{Company}}?
+
+— {{BDR Name}}
+
+
+───────────────────────────────────────────────────────────────────────────
+EMAIL 7 — DAY 17 | PROOF — CPG
+───────────────────────────────────────────────────────────────────────────
+
+Subject: how a CPG company cut lead times 60%
+
+{{First Name}},
+
+Three numbers from one CPG engagement:
+
+  60% reduction in order lead time
+  50% less overtime and expedited freight
+  30% improvement in asset utilization
+
+Same assets. Same team. Different scheduling discipline.
+
+I can walk you through what changed in 15 minutes.
+
+— {{BDR Name}}
+
+
+───────────────────────────────────────────────────────────────────────────
+EMAIL 8 — DAY 19 | THE OBJECTION
+───────────────────────────────────────────────────────────────────────────
+
+Subject: "we tried APS before"
+
+{{First Name}},
+
+Hear this a lot. And honestly — most APS failures are implementation
+failures, not software failures.
+
+Disconnected from execution. Planners weren't involved. Vendor walked
+away after go-live.
+
+We've seen that pattern across 1000+ sites. It's fixable. That's
+actually why On Time Edge exists — we don't sell the software, we make
+it work.
+
+Curious if what failed last time is what we typically fix?
+
+— {{BDR Name}}
+
+
+───────────────────────────────────────────────────────────────────────────
+EMAIL 9 — DAY 21 | THE VARIABILITY OBJECTION
+───────────────────────────────────────────────────────────────────────────
+
+Subject: "our floor is too variable"
+
+{{First Name}},
+
+That's actually the point.
+
+A schedule built around real constraints — finite capacity, actual
+machine status, material availability — doesn't fight variability. It
+accounts for it.
+
+The plan adapts. The accountability stays.
+
+A mobility manufacturer using this approach went from hours of weekly
+scheduling to 15 minutes. Full ROI in six months.
+
+Worth a conversation?
+
+— {{BDR Name}}
+
+
+───────────────────────────────────────────────────────────────────────────
+EMAIL 10 — DAY 23 | THE EXECUTIVE ANGLE
+───────────────────────────────────────────────────────────────────────────
+
+Subject: question for your ops review
+
+{{First Name}},
+
+Next time you're in an ops review and someone says "we missed the date
+because the schedule changed" — ask this:
+
+Did the schedule change, or did we just find out too late that it
+couldn't hold?
+
+That's the difference between a planning problem and an execution
+problem. We solve the second one.
+
+— {{BDR Name}}
+
+
+───────────────────────────────────────────────────────────────────────────
+EMAIL 11 — DAY 25 | THE ROI FRAME
+───────────────────────────────────────────────────────────────────────────
+
+Subject: 90 days to first results
+
+{{First Name}},
+
+Our typical engagement:
+
+  Day 1–3: Alignment workshop with your team
+  Day 3–90: Engineering + shadow scheduling alongside your current process
+  Day 90: First quantifiable results
+
+No big bang. No rip and replace. Your schedulers run the current process
+while we prove the new one works.
+
+A life sciences customer hit 15% inventory reduction and 20% less
+overtime this way.
+
+Want to see if the timeline works for {{Company}}?
+
+— {{BDR Name}}
+
+
+───────────────────────────────────────────────────────────────────────────
+EMAIL 12 — DAY 27 | THE VENDOR-AGNOSTIC ANGLE
+───────────────────────────────────────────────────────────────────────────
+
+Subject: we don't sell software
+
+{{First Name}},
+
+Quick clarification — we're not a software vendor. We're
+vendor-agnostic.
+
+We partner with PlanetTogether, Kinaxis, Siemens Opcenter, Dassault
+DELMIA, and others. We recommend whichever fits your plant — not
+whichever pays us the most.
+
+If your current APS is the right tool, we'll tell you that too. Then
+we'll make it actually work.
+
+— {{BDR Name}}
+
+
+───────────────────────────────────────────────────────────────────────────
+EMAIL 13 — DAY 29 | THE TRIGGER — OTIF
+───────────────────────────────────────────────────────────────────────────
+
+Subject: OTIF slipping?
+
+{{First Name}},
+
+If on-time delivery has been trending down — or holding flat while
+everyone works harder — the schedule is usually the root cause.
+
+Not the people. Not the machines. The schedule doesn't reflect what's
+actually possible, so teams work around it instead of from it.
+
+We typically see 5–15 point OTIF improvements when scheduling becomes
+an execution discipline.
+
+15 minutes to dig into what's driving your misses?
+
+— {{BDR Name}}
+
+
+───────────────────────────────────────────────────────────────────────────
+EMAIL 14 — DAY 31 | THE TRIGGER — OVERTIME
+───────────────────────────────────────────────────────────────────────────
+
+Subject: overtime every week?
+
+{{First Name}},
+
+Overtime that never goes away is almost always a scheduling problem
+disguised as a capacity problem.
+
+The capacity exists. It's just trapped in bad sequencing, unnecessary
+changeovers, and recovery from yesterday's surprises.
+
+One CPG customer cut overtime and expedited freight expenses by 50%.
+Not by adding shifts — by fixing the schedule.
+
+Worth a look?
+
+— {{BDR Name}}
+
+
+───────────────────────────────────────────────────────────────────────────
+EMAIL 15 — DAY 33 | THE TRIGGER — GROWTH
+───────────────────────────────────────────────────────────────────────────
+
+Subject: growing without new capex
+
+{{First Name}},
+
+Before you approve the next capacity expansion — what if the capacity
+is already there?
+
+A food production customer increased sales 20% within their existing
+environment. A CPG company improved asset utilization 30%. A high-tech
+manufacturer pushed output up 16%.
+
+None of them added a line. They made the existing schedule accountable.
+
+I can show you what that looks like for {{Company}} in 15 minutes.
+
+— {{BDR Name}}
+
+
+───────────────────────────────────────────────────────────────────────────
+EMAIL 16 — DAY 36 | THE NUDGE
+───────────────────────────────────────────────────────────────────────────
+
+Subject: still relevant?
+
+{{First Name}},
+
+I've reached out a few times about your production scheduling. Totally
+understand if the timing isn't right.
+
+But if your team is still replanning mid-week, still expediting, still
+working around the schedule instead of from it — that doesn't get
+better on its own.
+
+Happy to do a 15-minute diagnostic whenever it makes sense.
+
+— {{BDR Name}}
+
+
+───────────────────────────────────────────────────────────────────────────
+EMAIL 17 — DAY 40 | THE PEER PROOF
+───────────────────────────────────────────────────────────────────────────
+
+Subject: what other {{Industry}} manufacturers changed
+
+{{First Name}},
+
+A few results from manufacturers in your space:
+
+  Changeovers down 30%
+  Scheduling time reduced 96%
+  Late jobs reduced 20%+
+  Operating expenses from overtime cut 50%
+
+Same plants. Same teams. Different scheduling discipline.
+
+If any of those numbers would matter to {{Company}}, I can walk you
+through how they happened.
+
+— {{BDR Name}}
+
+
+───────────────────────────────────────────────────────────────────────────
+EMAIL 18 — DAY 45 | THE BREAKUP
+───────────────────────────────────────────────────────────────────────────
+
+Subject: closing the loop
+
+{{First Name}},
+
+I'll keep it short — this is my last note.
+
+If production scheduling isn't a priority right now, no hard feelings.
+But if the schedule is still breaking by Wednesday and your team is
+still managing around it instead of through it — we've fixed that
+problem at 1000+ sites.
+
+Whenever the timing is right:
+
+  {{BDR Name}}
+  {{BDR Email}}
+  {{BDR Phone}}
+
+Talk soon — or not. Either way, good luck on the floor.
+
+— {{BDR Name}}
+
+
+═══════════════════════════════════════════════════════════════════════════
+
+
+SEQUENCE AT A GLANCE
+
+  #    Day   Theme                     Hook
+  1      1   Wednesday question        "recover from it or despite it?"
+  2      3   The pattern               Monday→Wednesday→Friday cycle
+  3      6   The cost                  hidden cost of bad scheduling
+  4      9   The scheduler             96% time reduction
+  5     12   Connected ≠ ready         execution-ready distinction
+  6     14   Proof: Food Production    20% sales, same plant
+  7     17   Proof: CPG                60% lead time, 50% cost
+  8     19   Objection: tried APS      implementation failure, not software
+  9     21   Objection: too variable   variability is the point
+  10    23   Executive angle           ops review question
+  11    25   ROI frame                 90 days to first results
+  12    27   Vendor-agnostic           we don't sell software
+  13    29   Trigger: OTIF             5–15 point improvements
+  14    31   Trigger: overtime         capacity trapped in bad sequencing
+  15    33   Trigger: growth           expand without capex
+  16    36   Nudge                     "still relevant?"
+  17    40   Peer proof                industry-specific metrics
+  18    45   Breakup                   "closing the loop"
+
+
+PERSONALIZATION FIELDS
+
+  {{First Name}}    Prospect's first name
+  {{Company}}       Prospect's company
+  {{Industry}}      Prospect's industry vertical
+  {{BDR Name}}      Sales rep's name
+  {{BDR Email}}     Sales rep's email
+  {{BDR Phone}}     Sales rep's phone number
+
+
+NOTES FOR BDRs
+
+  • Every email has ONE ask. Don't add links, attachments, or calendly
+    unless your sequence tool requires it.
+  • Emails 1–5 establish the problem. Don't pitch OTE yet.
+  • Emails 6–7 are proof. Pick the case study closest to the prospect's
+    industry.
+  • Emails 8–9 handle the two biggest objections preemptively.
+  • Emails 10–12 reframe for executives and explain the engagement model.
+  • Emails 13–15 are trigger-based — swap in whichever matches the
+    prospect's pain (OTIF, overtime, growth).
+  • Emails 16–18 are the wind-down. Don't add more after the breakup.
+  • Mix calls between emails 4/5, 9/10, and 15/16.
+  • Add LinkedIn connection request around Day 7.
