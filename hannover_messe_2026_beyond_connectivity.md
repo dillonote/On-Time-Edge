@@ -1,217 +1,169 @@
-# Beyond Connectivity at Hannover Messe 2026
-## Full Email Sequence — On Time Edge × PlanetTogether
-### Hall 15, Stand G66 | April 20–24, 2026
+# Beyond Connectivity — Hannover Messe 2026
+## On Time Edge × PlanetTogether | Hall 15, Stand G66 | April 20–24
 
 ---
 
-## EMAIL 1 — THE PROVOCATION (3 weeks before show)
-**Send:** ~March 30 | **To:** VP Ops / COO / Supply Chain Executives
+## EMAIL 1 — 3 weeks before
+**Send:** ~March 30 | **To:** VP Ops / COO / Supply Chain
 
-**Subject:** Your systems are connected. Your schedule still breaks by Wednesday.
-**Preheader:** Most manufacturers are integrated. Very few hit their targets.
-
----
-
-You've invested in the integrations. ERP to MES. APS to the floor.
-
-And the schedule still breaks by Wednesday.
-
-The pattern: connectivity exists, but accountability for outcomes does not. Demand shifts. A line goes down. Teams bypass the plan. Leadership loses confidence the schedule can actually be executed.
-
-The missing piece isn't another integration — it's treating the schedule as an execution-ready control mechanism, not a planning exercise.
-
-That's what On Time Edge and PlanetTogether will be showing at Hannover Messe:
-
-- OTIF improvements of 5 to 15 points
-- Expediting and premium freight reduced 20% to 50%
-- Throughput gains of 5% to 10% — no new assets
-- Recovery time from disruption: days → hours
-
-**Hall 15, Stand G66. April 20–24.**
-
-→ **Book a meeting at Hannover Messe** ←
-
-Need a ticket? On us. Reply or book a meeting and we'll send a complimentary pass.
-
-P.S. "Connectivity solved a real problem. It didn't solve the performance problem." — Brian Vogel, CEO, On Time Edge
+**Subject:** You're connected. So why does the schedule still break?
+**Preheader:** The gap nobody's naming at Hannover this year.
 
 ---
 
-## EMAIL 2 — THE MECHANISM (2 weeks before show)
-**Send:** ~April 6 | **To:** VP Ops / Plant Managers / Digital Transformation Leaders
+Your ERP talks to your MES. Your APS talks to the floor. Data moves between systems every day.
 
-**Subject:** The difference between connected and execution-ready
-**Preheader:** Why constraint-aware scheduling changes enterprise performance.
+And by Wednesday, the schedule is already wrong.
 
----
+Not because the integration failed. Because nobody made the schedule accountable for what happens when conditions change.
 
-Connected means your systems talk to each other.
+That's the conversation On Time Edge and PlanetTogether are bringing to Hannover Messe — and it's one most booths won't touch.
 
-Execution-ready means the schedule is a trusted instrument teams run against — and that updates fast enough to matter when conditions change.
+When manufacturers treat scheduling as an execution discipline instead of a planning artifact: OTIF moves 5–15 points. Expediting drops 20–50%. Recovery goes from days to hours. No new capital required.
 
-Most plants are connected. Almost none are execution-ready.
+We'll be at **Hall 15, Stand G66**, April 20–24.
 
-PlanetTogether provides the constraint-aware scheduling engine. On Time Edge brings the execution discipline to make that schedule stick. Together: "Can we run the business against this schedule, today?"
+→ **Book a meeting** ←
 
-In practice:
+Need a ticket? On us — just reply.
 
-- Scheduling reduced from hours/week to 15 minutes — full ROI in 6 months (Mobility)
-- Hours of manual scheduling → minutes, 90% accuracy improvement (Food Production)
-- Promised shipment dates improved 8%, output up 16% (High-Tech)
-
-*"We tried APS before and it didn't work."*
-Most APS failures are implementation failures. We've fixed that pattern across 1000+ sites.
-
-→ **Reserve your meeting slot** ← Hall 15, Stand G66.
-
-Bring your constraint. We'll show you what changes. Complimentary passes available.
-
-P.S. "APS creates enterprise-level value when it changes day-to-day decisions on the shop floor." — Ted Recio, COO, PlanetTogether
+P.S. "Connectivity solved a real problem. It didn't solve the performance problem." — Brian Vogel, CEO
 
 ---
 
-## EMAIL 3 — THE PROOF (1 week before show)
-**Send:** ~April 13 | **To:** Plant Schedulers / Operations Leaders / VP Ops
+## EMAIL 2 — 2 weeks before
+**Send:** ~April 6 | **To:** VP Ops / Plant Managers / Digital Leaders
 
-**Subject:** 30% fewer changeovers. 96% less scheduling time. Real plants.
-**Preheader:** Real metrics from real manufacturers — not a vendor's slide deck.
-
----
-
-Numbers time.
-
-**Changeovers:** Beverage: −30%. Food Production: −30%. CPG: +25% throughput.
-
-**Scheduler productivity:** Printing & Packaging: 96% less time scheduling. Food Production: hours → minutes. Mobility: hours/week → 15 min, full ROI in 6 months.
-
-**Delivery & growth:** CPG: 60% shorter lead times. High-Tech: output up 16%. Food Production: 20% sales increase — no new lines.
-
-**Cost:** CPG: 50% reduction in overtime + expedited freight. Life Sciences: 15% less inventory overhead, 20% less overtime.
-
-**OEE:** CPG: 30% better asset utilization. Food Production: 25% more output.
-
-Notice what's not on that list: new capital investment. Every result came from making the existing schedule accountable.
-
-→ **Book your 15-minute diagnostic** ← Hall 15, Stand G66.
-
-Don't have a ticket? Reply "ticket" — we'll get one to you before the doors open.
-
-P.S. Not attending? Reply with your top scheduling challenge — we'll send a one-page breakdown. Or reply "ticket" and a free pass might change your mind.
+**Subject:** Connected ≠ execution-ready
+**Preheader:** One distinction that changes how you think about your digital strategy.
 
 ---
 
-## EMAIL 4 — DAY-OF REMINDER (Show day 1)
-**Send:** April 20, 7:00 AM CET | **To:** Full list
+Connected: your systems talk to each other.
 
-**Subject:** Hall 15, Stand G66. The schedule holds.
-**Preheader:** Come see what execution-ready looks like.
+Execution-ready: teams trust the schedule enough to run against it — and it updates fast enough to stay trustworthy.
 
----
+Almost every plant we walk into is connected. Almost none are execution-ready.
 
-It's go day.
+PlanetTogether builds the constraint-aware scheduling engine. We bring the execution discipline to make it stick. The question stops being "are we integrated?" and becomes "can we run the business against this schedule today?"
 
-On Time Edge × PlanetTogether. Hall 15, Stand G66.
+A mobility manufacturer went from hours of scheduling per week to 15 minutes. Full ROI in six months. A food producer got feasible schedules in minutes instead of hours — with 90% better accuracy.
 
-Stop by for:
-- A diagnostic conversation about your scheduling constraint — not a canned demo
-- Real customer metrics across beverage, CPG, food, pharma, and high-tech
-- Straight talk from people who've done this across 1000+ sites
+**Hall 15, Stand G66.** Bring your constraint. We'll show you what changes.
 
-No appointment needed. Walk up, tell us your constraint.
+→ **Reserve your slot** ←
 
-Need a pass? Reply now — complimentary tickets, we can get you in today.
+Complimentary passes available — just ask.
 
-P.S. Ask about the CPG company that cut operating expenses 50% — or the scheduler who got 96% of their week back.
+P.S. "APS creates enterprise value when it changes decisions on the shop floor." — Ted Recio, COO, PlanetTogether
 
 ---
 
-## EMAIL 5 — POST-SHOW FOLLOW-UP (1 day after show)
-**Send:** April 25 | **To:** Booth visitors + meeting attendees
+## EMAIL 3 — 1 week before
+**Send:** ~April 13 | **To:** Schedulers / Operations Leaders / VP Ops
 
-**Subject:** After Hannover: what we heard, what's next
-**Preheader:** Here's what we heard — and what comes next.
+**Subject:** 96% less time scheduling. 60% shorter lead times. Same plants.
+**Preheader:** The numbers. No qualifiers.
 
 ---
 
-Thank you for the conversation at Stand G66.
+I'll keep this one short. Just the results.
 
-We heard the same thing from nearly every leader who stopped by:
+Changeovers down 30% (Beverage, Food Production). Throughput up 25% (CPG). Scheduling time cut 96% (Printing & Packaging). Lead times cut 60% (CPG). Sales up 20% with zero new lines (Food Production). Overtime and freight expenses cut in half (CPG). Asset utilization up 30% (CPG). Full ROI in six months (Mobility).
 
-"We're connected. We're integrated. And we're still managing around the schedule instead of through it."
+Every one of those came from the existing schedule — made accountable.
 
-The metrics that started the most conversations:
-- 96% reduction in scheduling time (Printing & Packaging)
-- 60% shorter lead times (CPG)
-- 50% less overtime and freight expense (CPG)
-- 20% sales increase, same plant (Food Production)
-- Full ROI in 6 months (Mobility)
+One week out. **Hall 15, Stand G66.**
 
-If we agreed on a follow-up — expect specifics from your OTE contact within 48 hours.
+→ **Book 15 minutes** ←
 
-If we didn't connect:
+No ticket? Reply "ticket" and we'll handle it.
 
-→ **Book a 20-minute diagnostic call** ←
+P.S. Not making it to Hannover? Reply with your biggest scheduling pain point — we'll send back what we've seen work.
 
-We'll tell you if accountable scheduling is the right lever. If it's not, we'll say so.
+---
+
+## EMAIL 4 — Day of show
+**Send:** April 20, 7 AM CET | **To:** Full list
+
+**Subject:** Stand G66. We're here.
+**Preheader:** Walk up, tell us your constraint.
+
+---
+
+Hall 15, Stand G66. No appointment needed.
+
+Tell us your constraint. We'll tell you what we've seen work across 1000+ sites.
+
+Not a demo. A conversation.
+
+Still need a pass? Reply — we'll get you in today.
+
+P.S. Ask about the scheduler who got 96% of their week back.
+
+---
+
+## EMAIL 5 — 1 day after show
+**Send:** April 25 | **To:** Booth visitors + meetings
+
+**Subject:** What we heard at Stand G66
+**Preheader:** Same problem, every conversation.
+
+---
+
+Thanks for stopping by.
+
+Nearly every conversation at the booth started the same way: "We're integrated. We're still managing around the schedule."
+
+That's not a technology problem. That's an accountability problem.
+
+The numbers that got the most reactions: 96% scheduling time reduction. 60% shorter lead times. 50% less overtime and freight. 20% sales increase — same plant, same lines.
+
+If we agreed on next steps — expect specifics within 48 hours.
+
+If we didn't get to connect:
+
+→ **Book a 20-minute diagnostic** ←
+
+If accountable scheduling isn't the right lever, we'll tell you.
 
 P.S. "When scheduling becomes an execution discipline, you stop managing around the plan and start managing through it." — Brian Vogel
 
 ---
 
-## EMAIL 6 — POST-SHOW NURTURE (1 week after show)
+## EMAIL 6 — 1 week after show
 **Send:** May 2 | **To:** Non-responders + broader list
 
-**Subject:** One question to know if your schedule is accountable
-**Preheader:** If the answer is "no," we should talk.
+**Subject:** Does your team recover from the schedule — or despite it?
+**Preheader:** One question. You already know the answer.
 
 ---
 
-One question.
+When the schedule breaks on Wednesday — and it will — does your team recover *from* the schedule or *despite* it?
 
-When your schedule breaks on Wednesday — does your team recover *from* the schedule, or *despite* it?
+If despite it, the schedule is decorative. A plan that was accurate once.
 
-If "despite it," the schedule isn't accountable. It's decorative.
+One approach produced a 96% reduction in scheduling time and a 50% cut in overtime. The other produced your current Tuesday.
 
-One of these approaches produced a 96% scheduling time reduction, 60% shorter lead times, and 50% less overtime.
-
-The other produced your current Tuesday.
-
-The execution-ready checklist:
-- Finite capacity — real resource availability, not infinite assumptions
-- Closed-loop feedback — floor actuals update the schedule in near-real-time
-- Constraint-aware — the bottleneck is visible and protected
-- Scenario-driven — what-if in seconds, not hours
-
-If your schedule is decorative, the next step is a diagnostic — not a demo.
+The difference isn't the software. It's whether the schedule is accountable — finite capacity, closed-loop feedback, constraint-aware, scenario-driven.
 
 → **Book a 20-minute call** ←
 
 Sometimes the answer is APS. Sometimes integration. Sometimes governance. We'll tell you which.
 
-P.S. Missed Hannover? The question is the same: are you connected, or execution-ready?
+P.S. Missed Hannover? Same question applies: connected, or execution-ready?
 
 ---
 
 ## SEQUENCE SUMMARY
 
-| # | Email | Timing | Words | Theme |
-|---|-------|--------|-------|-------|
-| 1 | Provocation | -21 days | ~180 | Pattern interrupt: connected but failing |
-| 2 | Mechanism | -14 days | ~190 | Connected vs. execution-ready |
-| 3 | Proof | -7 days | ~200 | Customer metrics wall (compact) |
-| 4 | Day-Of | Day 1 | ~90 | Booth + walk-up CTA |
-| 5 | Follow-Up | +1 day | ~150 | Mirror what they said |
-| 6 | Nurture | +7 days | ~160 | Decorative vs. accountable |
+| # | Email | Timing | ~Words |
+|---|-------|--------|--------|
+| 1 | The hook | -21 days | 150 |
+| 2 | The distinction | -14 days | 155 |
+| 3 | The proof | -7 days | 120 |
+| 4 | Day-of | Day 1 | 50 |
+| 5 | Follow-up | +1 day | 120 |
+| 6 | Nurture | +7 days | 110 |
 
-### Sugarman Principles:
-- **Slippery slide:** Every sentence earns the next. Nothing wasted.
-- **Specificity:** Real metrics, real industries — never vague.
-- **Risk reversal:** Free tickets + "if it's not right, we'll say so."
-- **P.S. as second headline:** CEO/COO quotes, metric hooks, fallback CTAs.
-- **Rhythm:** Short open. Long carry. Short close.
-
-### Data Sources:
-- Press release: "Beyond Connectivity at Hannover Messe 2026"
-- Brian Vogel (CEO, OTE) + Ted Recio (COO, PlanetTogether) quotes
-- Customer metrics: Beverage, CPG, Food Production, Printing & Packaging, Mobility, High-Tech, Life Sciences, Industrial Machines
-- Booth: Hall 15, Stand G66, April 20–24, 2026
+**Data:** Press release "Beyond Connectivity," Brian Vogel + Ted Recio quotes, customer metrics across 8 industries, Hall 15 Stand G66, April 20–24 2026.
