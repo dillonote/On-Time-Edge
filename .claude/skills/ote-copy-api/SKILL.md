@@ -1,7 +1,6 @@
 ---
 name: ote-copy-api
 description: Generate On Time Edge copy by calling the local ote_copy_bot API running on localhost:8000.
-disable-model-invocation: true
 ---
 
 Steps:
