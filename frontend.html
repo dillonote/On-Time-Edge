@@ -101,6 +101,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .obj-item .st.y{color:#4ade80}
 .obj-item .st.n{color:#f87171}
 
+/* Voice methodology badges */
+.voice-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-left:5px;vertical-align:middle}
+.voice-dot.sugarman{background:#1C5AA0}
+.voice-dot.murray{background:#c084fc}
+.voice-banner{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:6px;margin-bottom:14px;font-size:12px;font-weight:500}
+.voice-banner.sugarman{background:rgba(28,90,160,.12);border:1px solid rgba(28,90,160,.3);color:#5b9bd5}
+.voice-banner.murray{background:rgba(192,132,252,.1);border:1px solid rgba(192,132,252,.3);color:#c084fc}
+.voice-banner .voice-label{font-weight:700;text-transform:uppercase;letter-spacing:0.5px;font-size:10px}
+
 #output-area{display:none}
 </style>
 </head>
@@ -125,6 +134,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <h2><span class="icon">+</span> Generate Marketing Copy</h2>
 
 <div class="cat-tabs" id="cat-tabs"></div>
+<div class="voice-banner sugarman" id="voice-banner">
+<span class="voice-label">Sugarman</span> Direct-response copywriting methodology with psychological triggers and slippery slide scoring
+</div>
 <div class="tpl-grid" id="tpl-grid"></div>
 
 <div class="brand-box">
@@ -222,23 +234,23 @@ let activeCategory = 'event_marketing';
 let activeTemplate = null;
 
 const CATEGORIES = [
-  {id:'event_marketing', name:'Event Marketing'},
-  {id:'cold_outreach', name:'Cold Outreach'},
-  {id:'discovery', name:'Discovery & Consultation'},
-  {id:'value_prop', name:'Value Proposition'},
-  {id:'case_study', name:'Case Study Share'},
-  {id:'case_study_fw', name:'Case Study Framework'},
-  {id:'blog_fw', name:'Blog Framework'},
-  {id:'industry_specific', name:'Industry-Specific'},
-  {id:'partner_co_sell', name:'Partner Co-Sell'},
-  {id:'executive_outreach', name:'Executive Outreach'},
-  {id:'nurture_sequence', name:'Nurture Sequences'},
-  {id:'re_engagement', name:'Re-Engagement'},
-  {id:'webinar', name:'Webinar & Workshop'},
-  {id:'referral', name:'Referral & Advocacy'},
-  {id:'linkedin', name:'LinkedIn Messages'},
-  {id:'text_msg', name:'Text Messages'},
-  {id:'phone_script', name:'Phone Scripts'},
+  {id:'event_marketing', name:'Event Marketing', voice:'sugarman'},
+  {id:'cold_outreach', name:'Cold Outreach', voice:'sugarman'},
+  {id:'discovery', name:'Discovery & Consultation', voice:'sugarman'},
+  {id:'value_prop', name:'Value Proposition', voice:'sugarman'},
+  {id:'case_study', name:'Case Study Share', voice:'sugarman'},
+  {id:'case_study_fw', name:'Case Study Framework', voice:'murray'},
+  {id:'blog_fw', name:'Blog Framework', voice:'murray'},
+  {id:'industry_specific', name:'Industry-Specific', voice:'sugarman'},
+  {id:'partner_co_sell', name:'Partner Co-Sell', voice:'sugarman'},
+  {id:'executive_outreach', name:'Executive Outreach', voice:'sugarman'},
+  {id:'nurture_sequence', name:'Nurture Sequences', voice:'sugarman'},
+  {id:'re_engagement', name:'Re-Engagement', voice:'sugarman'},
+  {id:'webinar', name:'Webinar & Workshop', voice:'sugarman'},
+  {id:'referral', name:'Referral & Advocacy', voice:'sugarman'},
+  {id:'linkedin', name:'LinkedIn Messages', voice:'sugarman'},
+  {id:'text_msg', name:'Text Messages', voice:'sugarman'},
+  {id:'phone_script', name:'Phone Scripts', voice:'sugarman'},
 ];
 
 const TEMPLATES = {
@@ -436,10 +448,11 @@ function init() {
   CATEGORIES.forEach(c => {
     const d = document.createElement('div');
     d.className = 'cat-tab' + (c.id === activeCategory ? ' active' : '');
-    d.textContent = c.name;
+    d.innerHTML = c.name + '<span class="voice-dot ' + c.voice + '" title="' + (c.voice === 'murray' ? 'Murray Brand Voice' : 'Sugarman Method') + '"></span>';
     d.onclick = () => selectCategory(c.id);
     tabsEl.appendChild(d);
   });
+  updateVoiceBanner();
 
   // Pain point chips
   const chipsEl = document.getElementById('pain-chips');
@@ -461,6 +474,19 @@ function selectCategory(id) {
   document.querySelectorAll('.cat-tab').forEach((t, i) => t.classList.toggle('active', CATEGORIES[i].id === id));
   renderTemplates();
   renderPractices();
+  updateVoiceBanner();
+}
+
+function updateVoiceBanner() {
+  const cat = CATEGORIES.find(c => c.id === activeCategory);
+  const banner = document.getElementById('voice-banner');
+  if (cat && cat.voice === 'murray') {
+    banner.className = 'voice-banner murray';
+    banner.innerHTML = '<span class="voice-label">Murray Brand Voice</span> Standard OTE brand voice \u2014 executive-level, factual, credible. No psychological triggers. Let the numbers speak.';
+  } else {
+    banner.className = 'voice-banner sugarman';
+    banner.innerHTML = '<span class="voice-label">Sugarman</span> Direct-response copywriting with psychological triggers, slippery slide scoring, and objection coverage';
+  }
 }
 
 function renderTemplates() {
