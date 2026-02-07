@@ -738,9 +738,13 @@ async def generate_llm(req: OTECopyRequest, brand: Dict[str, Any]) -> Tuple[Dict
 # ----------------------------
 app = FastAPI(title="On Time Edge Copy Bot", version="2.0")
 
+import pathlib
 from fastapi.responses import HTMLResponse
 
-FRONTEND_HTML = """<!DOCTYPE html>
+_FRONTEND_PATH = pathlib.Path(__file__).parent / "frontend.html"
+FRONTEND_HTML = _FRONTEND_PATH.read_text(encoding="utf-8") if _FRONTEND_PATH.exists() else "<h1>Frontend not found</h1>"
+
+_OLD_FRONTEND_HTML = """<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -1110,7 +1114,10 @@ async function loadObjections() {
 
 @app.get("/", response_class=HTMLResponse)
 async def homepage():
-    return FRONTEND_HTML
+    # Re-read at runtime in dev so --reload picks up changes
+    fp = pathlib.Path(__file__).parent / "frontend.html"
+    html = fp.read_text(encoding="utf-8") if fp.exists() else FRONTEND_HTML
+    return html
 
 @app.get("/health")
 async def health():
