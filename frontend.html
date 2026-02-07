@@ -116,6 +116,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <div class="stat"><div class="stat-num" id="s-copies">0</div><div class="stat-label">Copies Generated</div></div>
 <div class="stat"><div class="stat-num" id="s-checks">0</div><div class="stat-label">Guardrail Checks</div></div>
 <div class="stat"><div class="stat-num" id="s-emails">0</div><div class="stat-label">Optimized Emails</div></div>
+<div class="stat"><div class="stat-num" id="s-longform">0</div><div class="stat-label">Long-Form Content</div></div>
 </div>
 
 <div class="container">
@@ -216,7 +217,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
 <script>
 const BASE = window.location.origin;
-let copiesGenerated = 0, checksRun = 0, emailsOptimized = 0;
+let copiesGenerated = 0, checksRun = 0, emailsOptimized = 0, longFormGenerated = 0;
 let activeCategory = 'event_marketing';
 let activeTemplate = null;
 
@@ -226,6 +227,8 @@ const CATEGORIES = [
   {id:'discovery', name:'Discovery & Consultation'},
   {id:'value_prop', name:'Value Proposition'},
   {id:'case_study', name:'Case Study Share'},
+  {id:'case_study_fw', name:'Case Study Framework'},
+  {id:'blog_fw', name:'Blog Framework'},
   {id:'industry_specific', name:'Industry-Specific'},
   {id:'partner_co_sell', name:'Partner Co-Sell'},
   {id:'executive_outreach', name:'Executive Outreach'},
@@ -281,6 +284,32 @@ const TEMPLATES = {
     {id:'case_before_after', name:'Before & After', desc:'Contrast the old vs new scheduling reality', subject:'Before OTE: 40% rework. After: single digits.'},
     {id:'case_speed', name:'Speed to Value', desc:'Highlight fast implementation timeline', subject:'Live in 67 days \u2014 how {industry} company did it'},
     {id:'case_quote', name:'Customer Quote', desc:'Lead with a powerful customer testimonial', subject:'\"We stopped firefighting\" \u2014 VP Ops, {industry} manufacturer'},
+  ],
+  case_study_fw: [
+    {id:'csfw_challenge', name:'Challenge-Solution-Result', desc:'Standard 3-part case study: what they faced, what we did, what changed', subject:'Case Study: How {company} Transformed {industry} Scheduling'},
+    {id:'csfw_spotlight', name:'Customer Spotlight', desc:'Short-form customer profile with key metrics and quote', subject:'Customer Spotlight: {company}'},
+    {id:'csfw_roi', name:'ROI Deep Dive', desc:'Numbers-first case study: investment, timeline, payback, ongoing savings', subject:'{company} ROI Report: Scheduling Optimization'},
+    {id:'csfw_before_after', name:'Before & After', desc:'Side-by-side comparison of operations before and after implementation', subject:'Before & After: {company}\'s Scheduling Transformation'},
+    {id:'csfw_journey', name:'Implementation Journey', desc:'Week-by-week narrative of the implementation process and milestones', subject:'{company}\'s 90-Day Implementation Journey'},
+    {id:'csfw_partner', name:'Partner Success Story', desc:'Joint case study featuring OTE + technology partner working together', subject:'How {company} Connected Their Stack with On Time Edge'},
+    {id:'csfw_multi_plant', name:'Multi-Plant Rollout', desc:'Enterprise case study covering phased rollout across multiple sites', subject:'From 1 Plant to 6: {company}\'s Scheduling Rollout'},
+    {id:'csfw_quick_win', name:'Quick Win', desc:'One-page case study focused on a single fast result (under 90 days)', subject:'Quick Win: {company} Saw Results in Under 90 Days'},
+    {id:'csfw_industry', name:'Industry Benchmark', desc:'Case study positioned against industry benchmarks and averages', subject:'{industry} Benchmark: How {company} Outperforms the Average'},
+    {id:'csfw_video_script', name:'Video Testimonial Script', desc:'Script framework for a 2-3 minute customer video testimonial', subject:'Video: {company} on Working with On Time Edge'},
+  ],
+  blog_fw: [
+    {id:'blog_thought', name:'Thought Leadership', desc:'Executive-perspective article on industry trends and scheduling strategy', subject:'Why {industry} Leaders Are Rethinking Their Scheduling Approach'},
+    {id:'blog_howto', name:'How-To Guide', desc:'Step-by-step practical guide for solving a specific scheduling problem', subject:'How to Build a Constraint-Based Schedule That Holds'},
+    {id:'blog_problem', name:'Problem-Solution', desc:'Name a common pain point, explain why it persists, offer the fix', subject:'Why Your Schedule Breaks Every Monday (And How to Fix It)'},
+    {id:'blog_data', name:'Data-Driven Insight', desc:'Lead with a statistic or research finding, unpack the implications', subject:'73% of Manufacturers Replan Weekly. Here\'s What the Other 27% Know.'},
+    {id:'blog_compare', name:'Comparison / Buyer Guide', desc:'Objective comparison of scheduling approaches, tools, or strategies', subject:'APS vs. Spreadsheets vs. Constraint-Based Scheduling: An Honest Look'},
+    {id:'blog_myth', name:'Myth-Busting', desc:'Challenge a common assumption in manufacturing scheduling', subject:'5 Scheduling Myths That Cost Manufacturers Millions'},
+    {id:'blog_lessons', name:'Lessons Learned', desc:'Field observations from real implementations and what they reveal', subject:'What 300+ Implementations Taught Us About {industry} Scheduling'},
+    {id:'blog_partner', name:'Partner Spotlight', desc:'Educational post featuring a technology partner and integration value', subject:'Better Together: How On Time Edge Works with PlanetTogether'},
+    {id:'blog_trends', name:'Industry Trends', desc:'Forward-looking piece on where manufacturing scheduling is headed', subject:'The Future of {industry} Scheduling: 3 Trends to Watch'},
+    {id:'blog_checklist', name:'Assessment Checklist', desc:'Self-assessment readers can use to evaluate their scheduling maturity', subject:'Is Your Schedule Production-Ready? A 10-Point Checklist'},
+    {id:'blog_faq', name:'FAQ / Common Questions', desc:'Answer the top questions prospects ask about scheduling optimization', subject:'Scheduling Optimization FAQ: What {industry} Leaders Want to Know'},
+    {id:'blog_announce', name:'Product / Feature Update', desc:'Announce a new capability in OTE brand voice (not hype)', subject:'New: What-If Scenario Planning Is Now Live'},
   ],
   industry_specific: [
     {id:'ind_auto', name:'Automotive', desc:'OEM/Tier 1 supply chain and JIT scheduling', subject:'Tier 1 scheduling: when JIT meets reality'},
@@ -385,6 +414,8 @@ const PRACTICES = {
   discovery: ['Frame as exploratory, not a pitch','Ask 1-2 specific questions about their workflow','Reference something specific about their company','Keep it under 150 words'],
   value_prop: ['Lead with outcomes, not features','Use specific numbers (90 days, 1000+ sites)','Address the "why now" question','Include a low-friction CTA'],
   case_study: ['Match the case to their industry','Lead with the result, not the process','Keep it to one key metric','Offer to share the full story on a call'],
+  case_study_fw: ['Lead with the result, not the company name','Include at least 3 specific metrics (%, $, days, units)','Use direct quotes from the customer \u2014 never paraphrase','Structure: Challenge (what was broken) \u2192 Approach (what we did) \u2192 Result (what changed)','Keep the tone factual and credible \u2014 let the numbers speak','Name the industry, plant type, and scale (# lines, # SKUs, # plants)','End with a clear next step for the reader, not a generic CTA','Avoid superlatives \u2014 say "reduced rework by 38%" not "dramatically improved"'],
+  blog_fw: ['Write for the VP Ops or plant director who has 4 minutes to read','Open with a concrete observation or data point, never a question','Every claim needs a number, example, or customer reference behind it','Use short paragraphs (2-3 sentences max) and clear subheads','Tone: direct, knowledgeable, peer-to-peer \u2014 not salesy or academic','Include one OTE-relevant insight but don\'t make the whole post a pitch','End with a practical takeaway the reader can act on today','Target 800-1200 words for standard posts, 400-600 for quick takes'],
   industry_specific: ['Use industry-specific terminology','Reference their specific constraints','Mention relevant partners or integrations','Show you understand their compliance needs'],
   partner_co_sell: ['Name both companies in the subject line','Explain the combined value, not just each product','Reference a joint customer win if available','Keep the CTA joint (e.g. "call with both teams")'],
   executive_outreach: ['Keep under 100 words \u2014 executives skim','Lead with a business outcome, not a feature','Reference their company by name in the first line','Use data points from their industry or public filings'],
@@ -484,6 +515,8 @@ function buildCopyRequest() {
   let assetType = 'email_single';
   if (['linkedin'].includes(activeCategory)) assetType = 'linkedin_post';
   else if (['phone_script'].includes(activeCategory)) assetType = 'sales_one_pager';
+  else if (['case_study_fw'].includes(activeCategory)) assetType = 'sales_one_pager';
+  else if (['blog_fw'].includes(activeCategory)) assetType = 'sales_one_pager';
   else if (activeCategory === 'event_marketing') assetType = 'email_single';
 
   return {
@@ -528,9 +561,12 @@ function runGuardrails(text) {
 
   // Length check
   const wordCount = text.split(/\s+/).length;
+  const isLongForm = ['case_study_fw', 'blog_fw'].includes(activeCategory);
   const isEmail = ['event_marketing','cold_outreach','discovery','value_prop','case_study','industry_specific','partner_co_sell','executive_outreach','nurture_sequence','re_engagement','webinar','referral'].includes(activeCategory);
   const isShort = ['linkedin', 'text_msg'].includes(activeCategory);
-  if (isShort) {
+  if (isLongForm) {
+    checks.push({pass: wordCount >= 200, label: 'Length: ' + wordCount + ' words (target: 400-1200 for long-form content)'});
+  } else if (isShort) {
     checks.push({pass: wordCount <= 100, label: 'Length: ' + wordCount + ' words (target: under 100 for ' + activeCategory.replace('_', ' ') + ')'});
   } else if (isEmail) {
     checks.push({pass: wordCount >= 50 && wordCount <= 300, label: 'Length: ' + wordCount + ' words (target: 50-300 for emails)'});
@@ -560,7 +596,10 @@ async function doGenerate() {
     // Update stats
     copiesGenerated++;
     document.getElementById('s-copies').textContent = copiesGenerated;
-    if (['event_marketing','cold_outreach','discovery','value_prop','case_study','industry_specific','partner_co_sell','executive_outreach','nurture_sequence','re_engagement','webinar','referral'].includes(activeCategory)) {
+    if (['case_study_fw','blog_fw'].includes(activeCategory)) {
+      longFormGenerated++;
+      document.getElementById('s-longform').textContent = longFormGenerated;
+    } else if (['event_marketing','cold_outreach','discovery','value_prop','case_study','industry_specific','partner_co_sell','executive_outreach','nurture_sequence','re_engagement','webinar','referral'].includes(activeCategory)) {
       emailsOptimized++;
       document.getElementById('s-emails').textContent = emailsOptimized;
     }
