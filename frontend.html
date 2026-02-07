@@ -106,10 +106,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .voice-dot.sugarman{background:#1C5AA0}
 .voice-dot.murray{background:#c084fc}
 .voice-dot.surface{background:#f59e0b}
+.voice-dot.hunt{background:#34d399}
 .voice-banner{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:6px;margin-bottom:14px;font-size:12px;font-weight:500}
 .voice-banner.sugarman{background:rgba(28,90,160,.12);border:1px solid rgba(28,90,160,.3);color:#5b9bd5}
 .voice-banner.murray{background:rgba(192,132,252,.1);border:1px solid rgba(192,132,252,.3);color:#c084fc}
 .voice-banner.surface{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:#fbbf24}
+.voice-banner.hunt{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);color:#34d399}
 .voice-banner .voice-label{font-weight:700;text-transform:uppercase;letter-spacing:0.5px;font-size:10px}
 
 #output-area{display:none}
@@ -240,13 +242,13 @@ const CATEGORIES = [
   {id:'blog_fw', name:'Blog Framework', voice:'murray'},
   {id:'event_marketing', name:'Event Marketing', voice:'sugarman'},
   {id:'cold_outreach', name:'Cold Outreach', voice:'sugarman'},
-  {id:'discovery', name:'Discovery & Consultation', voice:'sugarman'},
+  {id:'discovery', name:'Discovery & Consultation', voice:'hunt'},
   {id:'value_prop', name:'Value Proposition', voice:'sugarman'},
   {id:'case_study', name:'Case Study Share', voice:'sugarman'},
   {id:'industry_specific', name:'Industry-Specific', voice:'sugarman'},
-  {id:'partner_co_sell', name:'Partner Co-Sell', voice:'sugarman'},
-  {id:'executive_outreach', name:'Executive Outreach', voice:'sugarman'},
-  {id:'nurture_sequence', name:'Nurture Sequences', voice:'sugarman'},
+  {id:'partner_co_sell', name:'Partner Co-Sell', voice:'hunt'},
+  {id:'executive_outreach', name:'Executive Outreach', voice:'hunt'},
+  {id:'nurture_sequence', name:'Nurture Sequences', voice:'hunt'},
   {id:'re_engagement', name:'Re-Engagement', voice:'surface'},
   {id:'webinar', name:'Webinar & Workshop', voice:'sugarman'},
   {id:'referral', name:'Referral & Advocacy', voice:'sugarman'},
@@ -425,15 +427,15 @@ const PAIN_POINTS = [
 const PRACTICES = {
   event_marketing: ['Mention the event by name in subject and opener','Include a specific benefit for attending','Use urgency (limited spots, countdown)','Add a personal touch \u2014 reference their role or industry'],
   cold_outreach: ['Keep subject under 8 words','First sentence must be under 7 words','Lead with their pain, not your product','Include one proof point if available'],
-  discovery: ['Frame as exploratory, not a pitch','Ask 1-2 specific questions about their workflow','Reference something specific about their company','Keep it under 150 words'],
+  discovery: ['Open with an insight about their industry they haven\u2019t considered','Frame as peer-to-peer \u2014 you\u2019ve seen this 300 times','Ask one sharp diagnostic question, not a list','Keep it under 150 words \u2014 earn the conversation, don\u2019t pitch'],
   value_prop: ['Lead with outcomes, not features','Use specific numbers (90 days, 1000+ sites)','Address the "why now" question','Include a low-friction CTA'],
   case_study: ['Match the case to their industry','Lead with the result, not the process','Keep it to one key metric','Offer to share the full story on a call'],
   case_study_fw: ['Lead with the result, not the company name','Include at least 3 specific metrics (%, $, days, units)','Use direct quotes from the customer \u2014 never paraphrase','Structure: Challenge (what was broken) \u2192 Approach (what we did) \u2192 Result (what changed)','Keep the tone factual and credible \u2014 let the numbers speak','Name the industry, plant type, and scale (# lines, # SKUs, # plants)','End with a clear next step for the reader, not a generic CTA','Avoid superlatives \u2014 say "reduced rework by 38%" not "dramatically improved"'],
   blog_fw: ['Write for the VP Ops or plant director who has 4 minutes to read','Open with a concrete observation or data point, never a question','Every claim needs a number, example, or customer reference behind it','Use short paragraphs (2-3 sentences max) and clear subheads','Tone: direct, knowledgeable, peer-to-peer \u2014 not salesy or academic','Include one OTE-relevant insight but don\'t make the whole post a pitch','End with a practical takeaway the reader can act on today','Target 800-1200 words for standard posts, 400-600 for quick takes'],
   industry_specific: ['Use industry-specific terminology','Reference their specific constraints','Mention relevant partners or integrations','Show you understand their compliance needs'],
-  partner_co_sell: ['Name both companies in the subject line','Explain the combined value, not just each product','Reference a joint customer win if available','Keep the CTA joint (e.g. "call with both teams")'],
-  executive_outreach: ['Keep under 100 words \u2014 executives skim','Lead with a business outcome, not a feature','Reference their company by name in the first line','Use data points from their industry or public filings'],
-  nurture_sequence: ['Space touches 3-5 business days apart','Each email should stand alone (don\'t assume they read the last)','Vary the format: stat, story, question, offer','Final touch should include a graceful exit'],
+  partner_co_sell: ['Name both companies in the subject line','Lead with the gap neither product fills alone \u2014 then show the combined fix','Reference a joint customer win if available','CTA should be advisory: "worth 15 min to see if this applies to you"'],
+  executive_outreach: ['Keep under 100 words \u2014 executives skim','Lead with an uncomfortable truth about their operation','Name the consequence they\u2019re already feeling but haven\u2019t articulated','One insight per message \u2014 leave them smarter even if they don\u2019t reply'],
+  nurture_sequence: ['Each touch should teach something new \u2014 never repeat the same angle','Build credibility through specificity: name the plant type, the metric, the constraint','Vary the challenger insight: data point, customer story, diagnostic question, contrarian take','Final touch: summarize what they\u2019d learn in 15 minutes, then graceful exit'],
   re_engagement: ['Acknowledge the gap since last contact','Lead with something new (feature, case study, news)','Don\'t guilt-trip \u2014 add value','Make the CTA even lower friction than before'],
   webinar: ['Include date, time, and duration in the subject or first line','Highlight the specific takeaway, not just the topic','Mention the speaker\'s credibility','Send reminders at 1 week, 1 day, and 2 hours before'],
   referral: ['Thank them for their own results first','Make the ask specific ("anyone in your network who...")','Provide a forwardable email they can send','Offer to make it easy \u2014 "just reply with their name"'],
@@ -450,7 +452,7 @@ function init() {
   CATEGORIES.forEach(c => {
     const d = document.createElement('div');
     d.className = 'cat-tab' + (c.id === activeCategory ? ' active' : '');
-    const voiceTitle = c.voice === 'murray' ? 'Murray Brand Voice' : c.voice === 'surface' ? 'Surface Method' : 'Sugarman Method';
+    const voiceTitle = c.voice === 'murray' ? 'Murray Brand Voice' : c.voice === 'surface' ? 'Surface Method' : c.voice === 'hunt' ? 'Hunt Method' : 'Sugarman Method';
     d.innerHTML = c.name + '<span class="voice-dot ' + c.voice + '" title="' + voiceTitle + '"></span>';
     d.onclick = () => selectCategory(c.id);
     tabsEl.appendChild(d);
@@ -490,6 +492,9 @@ function updateVoiceBanner() {
   } else if (voice === 'surface') {
     banner.className = 'voice-banner surface';
     banner.innerHTML = '<span class="voice-label">Surface</span> Conversational closer \u2014 authentic, direct, no corporate polish. Reads like a message from a trusted advisor. Short sentences, casual confidence.';
+  } else if (voice === 'hunt') {
+    banner.className = 'voice-banner hunt';
+    banner.innerHTML = '<span class="voice-label">Hunt</span> Consultative challenger \u2014 lead with an insight they haven\u2019t considered, teach something new, earn the next conversation. Peer-to-peer, advisory, specific.';
   } else {
     banner.className = 'voice-banner sugarman';
     banner.innerHTML = '<span class="voice-label">Sugarman</span> Direct-response copywriting with psychological triggers, slippery slide scoring, and objection coverage';
@@ -506,6 +511,9 @@ function updateVoiceBanner() {
   } else if (voice === 'surface') {
     lblName.textContent = 'Prospect Name'; lblCompany.textContent = 'Their Company'; lblSender.textContent = 'Your Name';
     fName.placeholder = 'e.g. Sarah'; fCompany.placeholder = 'e.g. Acme Manufacturing';
+  } else if (voice === 'hunt') {
+    lblName.textContent = 'Prospect Name'; lblCompany.textContent = 'Target Company'; lblSender.textContent = 'Advisor Name';
+    fName.placeholder = 'e.g. Sarah, VP Ops'; fCompany.placeholder = 'e.g. Acme Manufacturing';
   } else {
     lblName.textContent = 'Recipient Name'; lblCompany.textContent = 'Company Name'; lblSender.textContent = 'Sender Name';
     fName.placeholder = 'e.g. Sarah'; fCompany.placeholder = 'e.g. Acme Manufacturing';
