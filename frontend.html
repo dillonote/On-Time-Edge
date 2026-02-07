@@ -6,37 +6,37 @@
 <title>On Time Edge Marketing Suite</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0b1120;color:#e2e8f0;min-height:100vh}
-.header{background:linear-gradient(135deg,#0b1120 0%,#0f1d30 40%,#142d4d 100%);padding:28px 32px;text-align:center;border-bottom:2px solid #1C5AA0;display:flex;flex-direction:column;align-items:center;gap:8px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#141414;color:#e0e0e0;min-height:100vh}
+.header{background:#1a1a1a;padding:28px 32px;text-align:center;border-bottom:2px solid #1C5AA0;display:flex;flex-direction:column;align-items:center;gap:8px}
 .header-logo{height:44px;margin-bottom:4px;filter:brightness(0) invert(1)}
 .header h1{font-size:26px;color:#fff;margin-bottom:4px}
-.header p{font-size:14px;color:#7a9abb;max-width:600px;margin:0 auto}
-.stats{display:flex;justify-content:center;gap:32px;padding:20px;background:#0f1829;border-bottom:1px solid #1a2d48}
+.header p{font-size:14px;color:#888;max-width:600px;margin:0 auto}
+.stats{display:flex;justify-content:center;gap:32px;padding:20px;background:#1a1a1a;border-bottom:1px solid #2a2a2a}
 .stat{text-align:center}
 .stat-num{font-size:24px;font-weight:700;color:#fff}
-.stat-label{font-size:11px;color:#5a7a9a;text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+.stat-label{font-size:11px;color:#666;text-transform:uppercase;letter-spacing:1px;margin-top:2px}
 .container{max-width:1200px;margin:0 auto;padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:24px}
 @media(max-width:1024px){.container{grid-template-columns:1fr}}
-.card{background:#111b2b;border:1px solid #1a2d48;border-radius:12px;padding:24px}
+.card{background:#1e1e1e;border:1px solid #2a2a2a;border-radius:12px;padding:24px}
 .card h2{font-size:17px;color:#fff;margin-bottom:16px;display:flex;align-items:center;gap:8px}
 .card h2 .icon{width:20px;height:20px;background:#1C5AA0;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;color:#fff}
 
 /* Content type tabs */
 .cat-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
-.cat-tab{padding:7px 14px;background:#151f30;border:1px solid #1a2d48;border-radius:6px;cursor:pointer;color:#5a7a9a;font-size:12px;transition:all .2s;white-space:nowrap}
-.cat-tab:hover{background:#1a2d48;color:#c5d8ea}
+.cat-tab{padding:7px 14px;background:#252525;border:1px solid #333;border-radius:6px;cursor:pointer;color:#888;font-size:12px;transition:all .2s;white-space:nowrap}
+.cat-tab:hover{background:#333;color:#ccc}
 .cat-tab.active{background:#1C5AA0;color:#fff;border-color:#1C5AA0}
 
 /* Template grid */
 .tpl-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
-.tpl-card{background:#151f30;border:2px solid #1a2d48;border-radius:8px;padding:10px;cursor:pointer;transition:all .2s}
-.tpl-card:hover{border-color:#2570a8}
-.tpl-card.active{border-color:#1C5AA0;background:#152540;box-shadow:0 0 0 1px #1C5AA0}
-.tpl-card h4{font-size:13px;color:#e2e8f0;margin-bottom:3px}
-.tpl-card p{font-size:11px;color:#5a7a9a;line-height:1.3}
+.tpl-card{background:#252525;border:2px solid #333;border-radius:8px;padding:10px;cursor:pointer;transition:all .2s}
+.tpl-card:hover{border-color:#1C5AA0}
+.tpl-card.active{border-color:#1C5AA0;background:#1a2535;box-shadow:0 0 0 1px #1C5AA0}
+.tpl-card h4{font-size:13px;color:#e0e0e0;margin-bottom:3px}
+.tpl-card p{font-size:11px;color:#777;line-height:1.3}
 
 /* Brand profile */
-.brand-box{background:#0f1829;border:1px solid #1a2d48;border-radius:8px;padding:12px;margin-bottom:16px}
+.brand-box{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:12px;margin-bottom:16px}
 .brand-box h4{font-size:12px;color:#fff;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px}
 .brand-tags{display:flex;flex-wrap:wrap;gap:6px}
 .brand-tag{background:#1C5AA0;padding:4px 10px;border-radius:4px;font-size:11px;color:#fff;font-weight:500}
@@ -45,14 +45,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .fg{display:flex;flex-direction:column;gap:4px}
 .fg.full{grid-column:1/-1}
-.fg label{font-size:11px;font-weight:600;color:#7a9abb;text-transform:uppercase;letter-spacing:0.5px}
-.fg input,.fg textarea,.fg select{background:#151f30;border:1px solid #1a2d48;border-radius:6px;padding:9px 11px;color:#e2e8f0;font-size:13px;font-family:inherit}
+.fg label{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.5px}
+.fg input,.fg textarea,.fg select{background:#252525;border:1px solid #333;border-radius:6px;padding:9px 11px;color:#e0e0e0;font-size:13px;font-family:inherit}
 .fg input:focus,.fg textarea:focus,.fg select:focus{outline:none;border-color:#1C5AA0;box-shadow:0 0 0 3px rgba(28,90,160,.25)}
 .fg textarea{resize:vertical;min-height:60px}
 
 /* Pain point chips */
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
-.chip{padding:6px 12px;background:#151f30;border:1px solid #1a2d48;border-radius:16px;font-size:12px;color:#5a7a9a;cursor:pointer;transition:all .2s;user-select:none}
+.chip{padding:6px 12px;background:#252525;border:1px solid #333;border-radius:16px;font-size:12px;color:#888;cursor:pointer;transition:all .2s;user-select:none}
 .chip:hover{border-color:#1C5AA0;color:#fff}
 .chip.active{background:#1C5AA0;border-color:#1C5AA0;color:#fff;font-weight:500}
 
@@ -64,39 +64,39 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* Output */
-.output-box{background:#0b1120;border:1px solid #1a2d48;border-radius:8px;padding:16px;margin-bottom:12px}
+.output-box{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:16px;margin-bottom:12px}
 .subject-line{font-size:13px;color:#fff;margin-bottom:8px;font-weight:600}
-.copy-text{white-space:pre-wrap;font-size:14px;line-height:1.7;color:#e2e8f0}
+.copy-text{white-space:pre-wrap;font-size:14px;line-height:1.7;color:#e0e0e0}
 .copy-btn{padding:8px 16px;background:#1C5AA0;color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
 .copy-btn:hover{background:#2570a8}
 
 /* Guardrail checks */
 .checks{margin-top:16px}
 .check{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:6px;margin-bottom:6px;font-size:13px}
-.check.pass{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);color:#4ade80}
-.check.warn{background:rgba(234,179,8,.08);border:1px solid rgba(234,179,8,.25);color:#fbbf24}
-.check.fail{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);color:#f87171}
+.check.pass{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#4ade80}
+.check.warn{background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.3);color:#fbbf24}
+.check.fail{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#f87171}
 
 /* Best practices */
-.practices{background:#151f30;border:1px solid #1a2d48;border-radius:8px;padding:14px;margin-top:16px}
+.practices{background:#252525;border:1px solid #333;border-radius:8px;padding:14px;margin-top:16px}
 .practices h4{font-size:13px;color:#fff;margin-bottom:8px}
-.practices li{font-size:12px;color:#7a9abb;margin-left:16px;margin-bottom:4px;line-height:1.4}
+.practices li{font-size:12px;color:#999;margin-left:16px;margin-bottom:4px;line-height:1.4}
 
 /* Scores */
 .scores{display:flex;gap:12px;flex-wrap:wrap;margin:12px 0}
-.score-badge{background:#151f30;border:1px solid #1a2d48;padding:8px 14px;border-radius:6px;font-size:12px;color:#7a9abb}
+.score-badge{background:#252525;border:1px solid #333;padding:8px 14px;border-radius:6px;font-size:12px;color:#999}
 .score-badge strong{color:#fff}
 
 /* Triggers */
 .trigger-list{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
-.trigger-tag{background:#151f30;border:1px solid #1a2d48;padding:4px 10px;border-radius:4px;font-size:11px;color:#c5d8ea}
+.trigger-tag{background:#252525;border:1px solid #333;padding:4px 10px;border-radius:4px;font-size:11px;color:#ccc}
 .trigger-tag.strong{border-left:3px solid #4ade80}
 .trigger-tag.moderate{border-left:3px solid #1C5AA0}
-.trigger-tag.light{border-left:3px solid #2a3f58}
+.trigger-tag.light{border-left:3px solid #444}
 
 .section-title{font-size:12px;font-weight:600;color:#fff;margin:14px 0 6px;text-transform:uppercase;letter-spacing:0.5px}
 
-.obj-item{padding:6px 0;border-bottom:1px solid #1a2d48;font-size:12px}
+.obj-item{padding:6px 0;border-bottom:1px solid #2a2a2a;font-size:12px}
 .obj-item .st{font-weight:700}
 .obj-item .st.y{color:#4ade80}
 .obj-item .st.n{color:#f87171}
@@ -186,13 +186,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <div class="trigger-list" id="out-triggers"></div>
 
 <div class="section-title" id="concept-title" style="display:none">Concept Analysis</div>
-<div id="out-concept" style="font-size:13px;color:#7a9abb"></div>
+<div id="out-concept" style="font-size:13px;color:#999"></div>
 
 <div class="section-title" id="obj-title" style="display:none">Objection Coverage</div>
 <div id="out-objections"></div>
 </div>
 
-<div id="empty-state" style="text-align:center;padding:60px 20px;color:#2a3f58">
+<div id="empty-state" style="text-align:center;padding:60px 20px;color:#555">
 <div style="font-size:40px;margin-bottom:12px">&#9998;</div>
 <p>Select a content type and template, fill in the details, then click Generate.</p>
 </div>
