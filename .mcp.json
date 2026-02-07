@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "openaiDeveloperDocs": {
+      "type": "url",
+      "url": "https://developers.openai.com/mcp"
+    }
+  }
+}
