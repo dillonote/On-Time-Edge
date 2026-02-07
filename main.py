@@ -63,11 +63,18 @@ DEFAULT_BRAND_PROFILE: Dict[str, Any] = {
 }
 
 def load_brand_profile() -> Dict[str, Any]:
-    path = os.getenv("BRAND_PROFILE_JSON", "").strip()
-    if not path:
+    raw = os.getenv("BRAND_PROFILE_JSON", "").strip()
+    if not raw:
         return DEFAULT_BRAND_PROFILE
-    with open(path, "r", encoding="utf-8") as f:
-        obj = json.load(f)
+    # Try parsing as inline JSON first
+    try:
+        obj = json.loads(raw)
+    except (json.JSONDecodeError, ValueError):
+        # Fall back to treating it as a file path
+        if not os.path.isfile(raw):
+            return DEFAULT_BRAND_PROFILE
+        with open(raw, "r", encoding="utf-8") as f:
+            obj = json.load(f)
     merged = dict(DEFAULT_BRAND_PROFILE)
     merged.update(obj)
     return merged
