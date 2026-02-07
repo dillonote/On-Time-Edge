@@ -152,8 +152,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 </div>
 
 <div class="form-grid">
-<div class="fg"><label>Recipient Name</label><input id="f-name" placeholder="e.g. Sarah" /></div>
-<div class="fg"><label>Company Name</label><input id="f-company" placeholder="e.g. Acme Manufacturing" /></div>
+<div class="fg"><label id="lbl-name">Recipient Name</label><input id="f-name" placeholder="e.g. Sarah" /></div>
+<div class="fg"><label id="lbl-company">Company Name</label><input id="f-company" placeholder="e.g. Acme Manufacturing" /></div>
 <div class="fg"><label>Industry / Sector</label>
 <select id="f-industry">
 <option value="">Select industry...</option>
@@ -179,7 +179,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <option value="Contract Manufacturing">Contract Manufacturing</option>
 </select>
 </div>
-<div class="fg"><label>Sender Name</label><input id="f-sender" value="Dillon" /></div>
+<div class="fg"><label id="lbl-sender">Sender Name</label><input id="f-sender" value="Dillon" /></div>
 <div class="fg full"><label>Pain Points (click to select)</label>
 <div class="chips" id="pain-chips"></div>
 </div>
@@ -480,13 +480,20 @@ function selectCategory(id) {
 function updateVoiceBanner() {
   const cat = CATEGORIES.find(c => c.id === activeCategory);
   const banner = document.getElementById('voice-banner');
-  if (cat && cat.voice === 'murray') {
+  const isMurray = cat && cat.voice === 'murray';
+  if (isMurray) {
     banner.className = 'voice-banner murray';
     banner.innerHTML = '<span class="voice-label">Murray Brand Voice</span> Standard OTE brand voice \u2014 executive-level, factual, credible. No psychological triggers. Let the numbers speak.';
   } else {
     banner.className = 'voice-banner sugarman';
     banner.innerHTML = '<span class="voice-label">Sugarman</span> Direct-response copywriting with psychological triggers, slippery slide scoring, and objection coverage';
   }
+  // Swap form labels for long-form content categories
+  document.getElementById('lbl-name').textContent = isMurray ? 'Customer Name' : 'Recipient Name';
+  document.getElementById('lbl-company').textContent = isMurray ? 'Featured Company' : 'Company Name';
+  document.getElementById('lbl-sender').textContent = isMurray ? 'Author Name' : 'Sender Name';
+  document.getElementById('f-name').placeholder = isMurray ? 'e.g. featured customer contact' : 'e.g. Sarah';
+  document.getElementById('f-company').placeholder = isMurray ? 'e.g. company featured in the piece' : 'e.g. Acme Manufacturing';
 }
 
 function renderTemplates() {
