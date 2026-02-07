@@ -105,9 +105,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .voice-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-left:5px;vertical-align:middle}
 .voice-dot.sugarman{background:#1C5AA0}
 .voice-dot.murray{background:#c084fc}
+.voice-dot.surface{background:#f59e0b}
 .voice-banner{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:6px;margin-bottom:14px;font-size:12px;font-weight:500}
 .voice-banner.sugarman{background:rgba(28,90,160,.12);border:1px solid rgba(28,90,160,.3);color:#5b9bd5}
 .voice-banner.murray{background:rgba(192,132,252,.1);border:1px solid rgba(192,132,252,.3);color:#c084fc}
+.voice-banner.surface{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:#fbbf24}
 .voice-banner .voice-label{font-weight:700;text-transform:uppercase;letter-spacing:0.5px;font-size:10px}
 
 #output-area{display:none}
@@ -245,12 +247,12 @@ const CATEGORIES = [
   {id:'partner_co_sell', name:'Partner Co-Sell', voice:'sugarman'},
   {id:'executive_outreach', name:'Executive Outreach', voice:'sugarman'},
   {id:'nurture_sequence', name:'Nurture Sequences', voice:'sugarman'},
-  {id:'re_engagement', name:'Re-Engagement', voice:'sugarman'},
+  {id:'re_engagement', name:'Re-Engagement', voice:'surface'},
   {id:'webinar', name:'Webinar & Workshop', voice:'sugarman'},
   {id:'referral', name:'Referral & Advocacy', voice:'sugarman'},
-  {id:'linkedin', name:'LinkedIn Messages', voice:'sugarman'},
-  {id:'text_msg', name:'Text Messages', voice:'sugarman'},
-  {id:'phone_script', name:'Phone Scripts', voice:'sugarman'},
+  {id:'linkedin', name:'LinkedIn Messages', voice:'surface'},
+  {id:'text_msg', name:'Text Messages', voice:'surface'},
+  {id:'phone_script', name:'Phone Scripts', voice:'surface'},
 ];
 
 const TEMPLATES = {
@@ -448,7 +450,8 @@ function init() {
   CATEGORIES.forEach(c => {
     const d = document.createElement('div');
     d.className = 'cat-tab' + (c.id === activeCategory ? ' active' : '');
-    d.innerHTML = c.name + '<span class="voice-dot ' + c.voice + '" title="' + (c.voice === 'murray' ? 'Murray Brand Voice' : 'Sugarman Method') + '"></span>';
+    const voiceTitle = c.voice === 'murray' ? 'Murray Brand Voice' : c.voice === 'surface' ? 'Surface Method' : 'Sugarman Method';
+    d.innerHTML = c.name + '<span class="voice-dot ' + c.voice + '" title="' + voiceTitle + '"></span>';
     d.onclick = () => selectCategory(c.id);
     tabsEl.appendChild(d);
   });
@@ -480,20 +483,33 @@ function selectCategory(id) {
 function updateVoiceBanner() {
   const cat = CATEGORIES.find(c => c.id === activeCategory);
   const banner = document.getElementById('voice-banner');
-  const isMurray = cat && cat.voice === 'murray';
-  if (isMurray) {
+  const voice = cat ? cat.voice : 'sugarman';
+  if (voice === 'murray') {
     banner.className = 'voice-banner murray';
     banner.innerHTML = '<span class="voice-label">Murray Brand Voice</span> Standard OTE brand voice \u2014 executive-level, factual, credible. No psychological triggers. Let the numbers speak.';
+  } else if (voice === 'surface') {
+    banner.className = 'voice-banner surface';
+    banner.innerHTML = '<span class="voice-label">Surface</span> Conversational closer \u2014 authentic, direct, no corporate polish. Reads like a message from a trusted advisor. Short sentences, casual confidence.';
   } else {
     banner.className = 'voice-banner sugarman';
     banner.innerHTML = '<span class="voice-label">Sugarman</span> Direct-response copywriting with psychological triggers, slippery slide scoring, and objection coverage';
   }
-  // Swap form labels for long-form content categories
-  document.getElementById('lbl-name').textContent = isMurray ? 'Customer Name' : 'Recipient Name';
-  document.getElementById('lbl-company').textContent = isMurray ? 'Featured Company' : 'Company Name';
-  document.getElementById('lbl-sender').textContent = isMurray ? 'Author Name' : 'Sender Name';
-  document.getElementById('f-name').placeholder = isMurray ? 'e.g. featured customer contact' : 'e.g. Sarah';
-  document.getElementById('f-company').placeholder = isMurray ? 'e.g. company featured in the piece' : 'e.g. Acme Manufacturing';
+  // Swap form labels based on voice
+  const lblName = document.getElementById('lbl-name');
+  const lblCompany = document.getElementById('lbl-company');
+  const lblSender = document.getElementById('lbl-sender');
+  const fName = document.getElementById('f-name');
+  const fCompany = document.getElementById('f-company');
+  if (voice === 'murray') {
+    lblName.textContent = 'Customer Name'; lblCompany.textContent = 'Featured Company'; lblSender.textContent = 'Author Name';
+    fName.placeholder = 'e.g. featured customer contact'; fCompany.placeholder = 'e.g. company featured in the piece';
+  } else if (voice === 'surface') {
+    lblName.textContent = 'Prospect Name'; lblCompany.textContent = 'Their Company'; lblSender.textContent = 'Your Name';
+    fName.placeholder = 'e.g. Sarah'; fCompany.placeholder = 'e.g. Acme Manufacturing';
+  } else {
+    lblName.textContent = 'Recipient Name'; lblCompany.textContent = 'Company Name'; lblSender.textContent = 'Sender Name';
+    fName.placeholder = 'e.g. Sarah'; fCompany.placeholder = 'e.g. Acme Manufacturing';
+  }
 }
 
 function renderTemplates() {
