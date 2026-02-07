@@ -738,6 +738,380 @@ async def generate_llm(req: OTECopyRequest, brand: Dict[str, Any]) -> Tuple[Dict
 # ----------------------------
 app = FastAPI(title="On Time Edge Copy Bot", version="2.0")
 
+from fastapi.responses import HTMLResponse
+
+FRONTEND_HTML = """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>On Time Edge Copy Bot v2.0</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+  .header { background: linear-gradient(135deg, #1e293b, #334155); padding: 24px 32px; border-bottom: 1px solid #475569; }
+  .header h1 { font-size: 22px; color: #f8fafc; }
+  .header p { font-size: 13px; color: #94a3b8; margin-top: 4px; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+  .tab { padding: 10px 20px; background: #1e293b; border: 1px solid #334155; border-radius: 8px; cursor: pointer; color: #94a3b8; font-size: 14px; transition: all 0.2s; }
+  .tab:hover { background: #334155; color: #e2e8f0; }
+  .tab.active { background: #3b82f6; color: #fff; border-color: #3b82f6; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1 / -1; }
+  label { font-size: 13px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
+  input, textarea, select { background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 10px 12px; color: #e2e8f0; font-size: 14px; font-family: inherit; }
+  input:focus, textarea:focus, select:focus { outline: none; border-color: #3b82f6; }
+  textarea { resize: vertical; min-height: 80px; }
+  .btn { padding: 12px 24px; background: #3b82f6; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+  .btn:hover { background: #2563eb; }
+  .btn:disabled { background: #475569; cursor: not-allowed; }
+  .btn-row { margin-top: 20px; display: flex; gap: 12px; align-items: center; }
+  .spinner { display: none; width: 20px; height: 20px; border: 2px solid #475569; border-top: 2px solid #3b82f6; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .result { margin-top: 24px; background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 20px; display: none; }
+  .result h3 { font-size: 16px; color: #3b82f6; margin-bottom: 12px; }
+  .score-bar { display: flex; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+  .score-badge { background: #334155; padding: 8px 14px; border-radius: 6px; font-size: 13px; }
+  .score-badge strong { color: #3b82f6; }
+  .copy-output { background: #0f172a; border: 1px solid #334155; border-radius: 6px; padding: 16px; white-space: pre-wrap; font-size: 14px; line-height: 1.7; margin-bottom: 12px; }
+  .copy-btn { padding: 6px 14px; background: #334155; color: #e2e8f0; border: none; border-radius: 4px; font-size: 12px; cursor: pointer; }
+  .copy-btn:hover { background: #475569; }
+  .trigger-list { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0; }
+  .trigger-tag { background: #334155; padding: 4px 10px; border-radius: 4px; font-size: 12px; }
+  .trigger-tag.strong { border-left: 3px solid #22c55e; }
+  .trigger-tag.moderate { border-left: 3px solid #eab308; }
+  .trigger-tag.light { border-left: 3px solid #64748b; }
+  .warning { background: #451a03; border: 1px solid #92400e; padding: 8px 12px; border-radius: 6px; font-size: 13px; color: #fbbf24; margin: 4px 0; }
+  .objection-item { padding: 8px 0; border-bottom: 1px solid #1e293b; font-size: 13px; }
+  .objection-item .status { font-weight: 600; }
+  .objection-item .status.yes { color: #22c55e; }
+  .objection-item .status.no { color: #ef4444; }
+  .section-title { font-size: 14px; font-weight: 600; color: #94a3b8; margin: 16px 0 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  @media (max-width: 700px) { .form-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>On Time Edge Copy Bot v2.0</h1>
+  <p>Sugarman direct-response copy generator with trigger detection, objection analysis, and A/B variants</p>
+</div>
+<div class="container">
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('generate')">Generate</div>
+    <div class="tab" onclick="switchTab('refine')">Refine</div>
+    <div class="tab" onclick="switchTab('variants')">A/B Variants</div>
+    <div class="tab" onclick="switchTab('browse')">Browse</div>
+  </div>
+
+  <!-- GENERATE -->
+  <div id="generate" class="panel active">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Asset Type</label>
+        <select id="g-asset">
+          <option value="email_single">Email</option>
+          <option value="landing_hero">Landing Page Hero</option>
+          <option value="linkedin_post">LinkedIn Post</option>
+          <option value="google_search_ad">Google Search Ad</option>
+          <option value="sales_one_pager">Sales One-Pager</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Target Audience</label>
+        <input id="g-audience" value="Plant Manager" />
+      </div>
+      <div class="form-group full">
+        <label>Offer Name</label>
+        <input id="g-offer" value="On Time Edge APS Implementation" />
+      </div>
+      <div class="form-group full">
+        <label>Primary Outcome</label>
+        <input id="g-outcome" value="a schedule that survives contact with reality" />
+      </div>
+      <div class="form-group full">
+        <label>Key Benefits (one per line)</label>
+        <textarea id="g-benefits">Reduce rework from last-minute schedule changes
+Make constraints visible before they cause problems
+Align planning with daily shop-floor execution</textarea>
+      </div>
+      <div class="form-group full">
+        <label>Offer Details</label>
+        <input id="g-details" value="Book a 20-minute walkthrough and we'll map your constraints to a practical next step." />
+      </div>
+      <div class="form-group">
+        <label>CTA</label>
+        <input id="g-cta" value="Book a demo" />
+      </div>
+      <div class="form-group">
+        <label>Proof Points (one per line, optional)</label>
+        <textarea id="g-proof">1000+ site implementations across 300+ global companies
+90-day time-to-first-value implementation target</textarea>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" onclick="doGenerate()">Generate Copy</button>
+      <div class="spinner" id="g-spin"></div>
+    </div>
+    <div class="result" id="g-result"></div>
+  </div>
+
+  <!-- REFINE -->
+  <div id="refine" class="panel">
+    <div class="form-grid">
+      <div class="form-group full">
+        <label>Original Copy</label>
+        <textarea id="r-original" rows="5" placeholder="Paste your copy here..."></textarea>
+      </div>
+      <div class="form-group full">
+        <label>Feedback</label>
+        <input id="r-feedback" placeholder="e.g. Make it more urgent, open with a question, add proof" />
+      </div>
+      <div class="form-group">
+        <label>Target Audience</label>
+        <input id="r-audience" value="Plant Manager" />
+      </div>
+      <div class="form-group">
+        <label>Asset Type</label>
+        <select id="r-asset">
+          <option value="email_single">Email</option>
+          <option value="landing_hero">Landing Page Hero</option>
+          <option value="linkedin_post">LinkedIn Post</option>
+        </select>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" onclick="doRefine()">Refine Copy</button>
+      <div class="spinner" id="r-spin"></div>
+    </div>
+    <div class="result" id="r-result"></div>
+  </div>
+
+  <!-- VARIANTS -->
+  <div id="variants" class="panel">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Target Audience</label>
+        <input id="v-audience" value="VP of Operations" />
+      </div>
+      <div class="form-group">
+        <label>Number of Variants</label>
+        <select id="v-num">
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label>Primary Outcome</label>
+        <input id="v-outcome" value="a schedule that survives contact with reality" />
+      </div>
+      <div class="form-group full">
+        <label>Key Benefits (one per line)</label>
+        <textarea id="v-benefits">Reduce rework from schedule changes
+Make constraints visible
+Align planning with execution</textarea>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" onclick="doVariants()">Generate Variants</button>
+      <div class="spinner" id="v-spin"></div>
+    </div>
+    <div class="result" id="v-result"></div>
+  </div>
+
+  <!-- BROWSE -->
+  <div id="browse" class="panel">
+    <div class="btn-row" style="margin-top:0">
+      <button class="btn" onclick="loadTriggers()">Load Triggers</button>
+      <button class="btn" onclick="loadOpeners()">Load Openers</button>
+      <button class="btn" onclick="loadObjections()">Load Objections</button>
+      <select id="b-audience">
+        <option value="plant manager">Plant Manager</option>
+        <option value="vp of operations">VP Ops</option>
+        <option value="coo">COO</option>
+        <option value="it director">IT Director</option>
+        <option value="supply chain director">Supply Chain</option>
+      </select>
+    </div>
+    <div class="result" id="b-result" style="display:block;margin-top:16px;min-height:100px;">Click a button above to browse.</div>
+  </div>
+</div>
+
+<script>
+const BASE = window.location.origin;
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['generate','refine','variants','browse'][i]===name));
+  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id===name));
+}
+
+function lines(id) { return document.getElementById(id).value.split('\\n').filter(l=>l.trim()); }
+
+function showSpin(id, on) { document.getElementById(id).style.display = on?'block':'none'; }
+
+function copyText(text) { navigator.clipboard.writeText(text); }
+
+function renderCopy(content) {
+  if (content.body) return content.body;
+  if (content.post) return content.post;
+  let parts = [];
+  if (content.headline) parts.push(content.headline);
+  if (content.subhead) parts.push(content.subhead);
+  if (content.bullets) parts.push(content.bullets.map(b=>'- '+b).join('\\n'));
+  if (content.proof_line) parts.push(content.proof_line);
+  if (content.cta) parts.push(content.cta);
+  return parts.join('\\n\\n');
+}
+
+function renderTriggers(triggers) {
+  if (!triggers||!triggers.length) return '<p>No triggers detected.</p>';
+  return '<div class="trigger-list">'+triggers.map(t=>'<span class="trigger-tag '+t.strength+'">'+t.name+' ('+t.match_count+')</span>').join('')+'</div>';
+}
+
+function renderWarnings(warnings) {
+  if (!warnings||!warnings.length) return '';
+  return warnings.map(w=>'<div class="warning">'+w+'</div>').join('');
+}
+
+function renderObjAnalysis(objs) {
+  if (!objs||!objs.length) return '';
+  return objs.map(o=>'<div class="objection-item"><span class="status '+(o.addressed?'yes':'no')+'">'+(o.addressed?'ADDRESSED':'MISSING')+'</span> '+o.objection+'</div>').join('');
+}
+
+async function doGenerate() {
+  showSpin('g-spin', true);
+  const body = {
+    asset_type: document.getElementById('g-asset').value,
+    offer_name: document.getElementById('g-offer').value,
+    target_audience: document.getElementById('g-audience').value,
+    primary_outcome: document.getElementById('g-outcome').value,
+    key_benefits: lines('g-benefits'),
+    proof_points: lines('g-proof'),
+    offer_details: document.getElementById('g-details').value,
+    cta: document.getElementById('g-cta').value,
+    provider: 'template'
+  };
+  try {
+    const r = await fetch(BASE+'/generate', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+    const d = await r.json();
+    if (!r.ok) { document.getElementById('g-result').innerHTML='<p>Error: '+JSON.stringify(d.detail)+'</p>'; document.getElementById('g-result').style.display='block'; return; }
+    const text = renderCopy(d.content);
+    let html = '<h3>Generated Copy</h3>';
+    html += '<div class="score-bar"><div class="score-badge">Slippery Score: <strong>'+d.slippery_score+'</strong>/100</div>';
+    html += '<div class="score-badge">Triggers: <strong>'+(d.triggers?d.triggers.length:0)+'</strong>/30</div>';
+    if (d.concept) html += '<div class="score-badge">Concept: <strong>'+d.concept.primary_concept+'</strong> ('+d.concept.strength+'/10)</div>';
+    html += '</div>';
+    html += '<div class="copy-output" id="copy-text">'+text.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</div>';
+    html += '<button class="copy-btn" onclick="copyText(document.getElementById(\\'copy-text\\').innerText)">Copy to clipboard</button>';
+    html += renderWarnings(d.warnings);
+    if (d.triggers&&d.triggers.length) { html += '<div class="section-title">Triggers Detected</div>'+renderTriggers(d.triggers); }
+    if (d.concept&&d.concept.suggestion) { html += '<div class="section-title">Concept Analysis</div><p style="font-size:13px;color:#94a3b8;">'+d.concept.suggestion+'</p>'; }
+    if (d.objection_analysis&&d.objection_analysis.length) { html += '<div class="section-title">Objection Coverage</div>'+renderObjAnalysis(d.objection_analysis); }
+    document.getElementById('g-result').innerHTML = html;
+    document.getElementById('g-result').style.display = 'block';
+  } catch(e) { document.getElementById('g-result').innerHTML='<p>Error: '+e.message+'</p>'; document.getElementById('g-result').style.display='block'; }
+  finally { showSpin('g-spin', false); }
+}
+
+async function doRefine() {
+  showSpin('r-spin', true);
+  const body = {
+    original_copy: document.getElementById('r-original').value,
+    feedback: document.getElementById('r-feedback').value,
+    target_audience: document.getElementById('r-audience').value,
+    asset_type: document.getElementById('r-asset').value,
+    provider: 'template'
+  };
+  try {
+    const r = await fetch(BASE+'/refine', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+    const d = await r.json();
+    let html = '<h3>Refined Copy</h3>';
+    html += '<div class="score-bar">';
+    html += '<div class="score-badge">Before: <strong>'+d.slippery_score_before+'</strong></div>';
+    html += '<div class="score-badge">After: <strong>'+d.slippery_score_after+'</strong></div>';
+    html += '<div class="score-badge">Triggers: <strong>'+d.triggers_before+'</strong> &rarr; <strong>'+d.triggers_after+'</strong></div>';
+    html += '</div>';
+    html += '<div class="copy-output">'+d.refined_copy.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</div>';
+    html += '<button class="copy-btn" onclick="copyText(this.previousElementSibling.innerText)">Copy to clipboard</button>';
+    document.getElementById('r-result').innerHTML = html;
+    document.getElementById('r-result').style.display = 'block';
+  } catch(e) { document.getElementById('r-result').innerHTML='<p>Error: '+e.message+'</p>'; document.getElementById('r-result').style.display='block'; }
+  finally { showSpin('r-spin', false); }
+}
+
+async function doVariants() {
+  showSpin('v-spin', true);
+  const body = {
+    asset_type: 'email_single',
+    offer_name: 'On Time Edge APS Implementation',
+    target_audience: document.getElementById('v-audience').value,
+    primary_outcome: document.getElementById('v-outcome').value,
+    key_benefits: lines('v-benefits'),
+    offer_details: 'Book a 20-minute walkthrough.',
+    num_variants: parseInt(document.getElementById('v-num').value),
+    provider: 'template'
+  };
+  try {
+    const r = await fetch(BASE+'/variants', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+    const d = await r.json();
+    let html = '<h3>A/B Variants</h3>';
+    html += '<p style="font-size:13px;color:#94a3b8;margin-bottom:12px;">Best: Variant '+d.best_variant_id+'</p>';
+    d.variants.forEach(v => {
+      const isBest = v.variant_id === d.best_variant_id;
+      html += '<div style="border:1px solid '+(isBest?'#3b82f6':'#334155')+';border-radius:8px;padding:14px;margin-bottom:12px;">';
+      html += '<div style="display:flex;justify-content:space-between;margin-bottom:8px;"><strong>V'+v.variant_id+' - '+v.opener_type+'</strong>';
+      html += '<span class="score-badge">Slide: <strong>'+v.slippery_score+'</strong> | Triggers: <strong>'+v.trigger_count+'</strong></span></div>';
+      html += '<div class="copy-output" style="font-size:13px;">'+v.content.body.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</div>';
+      html += '<button class="copy-btn" onclick="copyText(this.previousElementSibling.innerText)">Copy</button>';
+      html += '</div>';
+    });
+    document.getElementById('v-result').innerHTML = html;
+    document.getElementById('v-result').style.display = 'block';
+  } catch(e) { document.getElementById('v-result').innerHTML='<p>Error: '+e.message+'</p>'; document.getElementById('v-result').style.display='block'; }
+  finally { showSpin('v-spin', false); }
+}
+
+async function loadTriggers() {
+  const r = await fetch(BASE+'/triggers');
+  const d = await r.json();
+  let html = '<h3>Sugarman\\'s 30 Psychological Triggers</h3><div style="margin-top:12px;">';
+  d.triggers.forEach(t => { html += '<div style="padding:6px 0;border-bottom:1px solid #1e293b;"><strong>#'+t.id+' '+t.name+'</strong> &mdash; '+t.description+'</div>'; });
+  html += '</div>';
+  document.getElementById('b-result').innerHTML = html;
+}
+
+async function loadOpeners() {
+  const r = await fetch(BASE+'/openers');
+  const d = await r.json();
+  let html = '<h3>First-Sentence Library ('+d.count+' openers)</h3>';
+  d.types.forEach(type => {
+    html += '<div class="section-title">'+type+'</div>';
+    d.openers.filter(o=>o.type===type).forEach(o => { html += '<div style="padding:4px 0;font-size:14px;">&ldquo;'+o.template+'&rdquo;</div>'; });
+  });
+  document.getElementById('b-result').innerHTML = html;
+}
+
+async function loadObjections() {
+  const aud = document.getElementById('b-audience').value;
+  const r = await fetch(BASE+'/objections/'+encodeURIComponent(aud));
+  if (!r.ok) { document.getElementById('b-result').innerHTML='<p>No objections found for that audience.</p>'; return; }
+  const d = await r.json();
+  let html = '<h3>Objections for '+d.audience+'</h3>';
+  d.objections.forEach(o => { html += '<div style="padding:8px 0;border-bottom:1px solid #1e293b;"><strong>&ldquo;'+o.objection+'&rdquo;</strong><br><span style="font-size:12px;color:#94a3b8;">Hint: '+o.rebuttal_hint+'</span></div>'; });
+  document.getElementById('b-result').innerHTML = html;
+}
+</script>
+</body>
+</html>"""
+
+@app.get("/", response_class=HTMLResponse)
+async def homepage():
+    return FRONTEND_HTML
+
 @app.get("/health")
 async def health():
     return {"status": "ok", "version": "2.0"}
