@@ -230,17 +230,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <script>
 const BASE = window.location.origin;
 let copiesGenerated = 0, checksRun = 0, emailsOptimized = 0, longFormGenerated = 0;
-let activeCategory = 'event_marketing';
+let activeCategory = 'case_study_fw';
 let activeTemplate = null;
 
 const CATEGORIES = [
+  {id:'case_study_fw', name:'Case Study Framework', voice:'murray'},
+  {id:'blog_fw', name:'Blog Framework', voice:'murray'},
   {id:'event_marketing', name:'Event Marketing', voice:'sugarman'},
   {id:'cold_outreach', name:'Cold Outreach', voice:'sugarman'},
   {id:'discovery', name:'Discovery & Consultation', voice:'sugarman'},
   {id:'value_prop', name:'Value Proposition', voice:'sugarman'},
   {id:'case_study', name:'Case Study Share', voice:'sugarman'},
-  {id:'case_study_fw', name:'Case Study Framework', voice:'murray'},
-  {id:'blog_fw', name:'Blog Framework', voice:'murray'},
   {id:'industry_specific', name:'Industry-Specific', voice:'sugarman'},
   {id:'partner_co_sell', name:'Partner Co-Sell', voice:'sugarman'},
   {id:'executive_outreach', name:'Executive Outreach', voice:'sugarman'},
