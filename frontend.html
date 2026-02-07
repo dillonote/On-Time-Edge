@@ -144,16 +144,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <div class="fg"><label>Industry / Sector</label>
 <select id="f-industry">
 <option value="">Select industry...</option>
-<option value="Automotive">Automotive</option>
-<option value="Aerospace">Aerospace</option>
+<option value="Automotive">Automotive / Tier 1</option>
+<option value="Aerospace">Aerospace & Defense</option>
 <option value="Industrial Equipment">Industrial Equipment</option>
-<option value="Electronics">Electronics</option>
+<option value="Electronics">Electronics & Semiconductors</option>
 <option value="Medical Devices">Medical Devices</option>
 <option value="Food & Beverage">Food & Beverage</option>
 <option value="Pharmaceuticals">Pharmaceuticals</option>
 <option value="Metal Fabrication">Metal Fabrication</option>
 <option value="Plastics & Composites">Plastics & Composites</option>
 <option value="Assembly Operations">Assembly Operations</option>
+<option value="Chemicals">Chemicals & Process</option>
+<option value="Packaging">Packaging & CPG</option>
+<option value="Energy">Energy & Utilities</option>
+<option value="Building Materials">Building Materials</option>
+<option value="Textiles">Textiles & Apparel</option>
+<option value="Paper & Pulp">Paper & Pulp</option>
+<option value="Glass & Ceramics">Glass & Ceramics</option>
+<option value="Oil & Gas">Oil & Gas</option>
+<option value="Mining">Mining & Minerals</option>
+<option value="Contract Manufacturing">Contract Manufacturing</option>
 </select>
 </div>
 <div class="fg"><label>Sender Name</label><input id="f-sender" value="Dillon" /></div>
@@ -217,6 +227,12 @@ const CATEGORIES = [
   {id:'value_prop', name:'Value Proposition'},
   {id:'case_study', name:'Case Study Share'},
   {id:'industry_specific', name:'Industry-Specific'},
+  {id:'partner_co_sell', name:'Partner Co-Sell'},
+  {id:'executive_outreach', name:'Executive Outreach'},
+  {id:'nurture_sequence', name:'Nurture Sequences'},
+  {id:'re_engagement', name:'Re-Engagement'},
+  {id:'webinar', name:'Webinar & Workshop'},
+  {id:'referral', name:'Referral & Advocacy'},
   {id:'linkedin', name:'LinkedIn Messages'},
   {id:'text_msg', name:'Text Messages'},
   {id:'phone_script', name:'Phone Scripts'},
@@ -227,54 +243,140 @@ const TEMPLATES = {
     {id:'event_invite', name:'Event Invitation', desc:'Invite prospects to trade shows, webinars, or workshops', subject:'You\'re invited: {event} \u2014 complimentary pass inside'},
     {id:'event_followup', name:'Event Follow-Up', desc:'Reconnect after meeting at an event', subject:'Great connecting at {event}, {name}'},
     {id:'event_countdown', name:'Event Countdown', desc:'Build urgency before an upcoming event', subject:'{days} days until {event} \u2014 are you in?'},
+    {id:'event_workshop', name:'Workshop Invitation', desc:'Invite to a hands-on scheduling workshop', subject:'Hands-on workshop: build your constraint model live'},
+    {id:'event_keynote', name:'Keynote Highlight', desc:'Share key takeaways from a presentation', subject:'3 takeaways from our {event} session you missed'},
+    {id:'event_booth', name:'Booth Visit Invite', desc:'Drive traffic to your trade show booth', subject:'Booth #{days} at {event} \u2014 live scheduling demo'},
   ],
   cold_outreach: [
     {id:'cold_pain', name:'Pain Point Lead', desc:'Open with a specific operational pain', subject:'The real reason {audience} replan every week'},
     {id:'cold_insight', name:'Industry Insight', desc:'Lead with a surprising data point', subject:'Something hiding in your {industry} production data'},
     {id:'cold_peer', name:'Peer Reference', desc:'Reference what similar companies are doing', subject:'How other {industry} manufacturers handle this'},
     {id:'cold_breakup', name:'Breakup Email', desc:'Final touch \u2014 polite close with open door', subject:'Should I close the loop, {name}?'},
+    {id:'cold_trigger', name:'Trigger Event', desc:'Reference a recent event (expansion, hire, earnings)', subject:'Saw {company}\'s news \u2014 quick thought on scheduling'},
+    {id:'cold_competitor', name:'Competitor Displacement', desc:'Position against incumbent scheduling tools', subject:'What {company}\'s current scheduling tool can\'t show you'},
+    {id:'cold_question', name:'One Question Email', desc:'Single provocative question to start dialogue', subject:'One question about {company}\'s production schedule'},
+    {id:'cold_video', name:'Video Intro', desc:'Short personalized video message pitch', subject:'{name}, I recorded a 60-second video for you'},
   ],
   discovery: [
     {id:'disc_intro', name:'Discovery Call Invite', desc:'Invite to an exploratory conversation', subject:'Quick question about your scheduling, {name}'},
     {id:'disc_agenda', name:'Pre-Call Agenda', desc:'Send before a scheduled discovery call', subject:'Agenda for our call {day} \u2014 3 things to cover'},
     {id:'disc_followup', name:'Post-Discovery Recap', desc:'Summarize findings after a discovery call', subject:'Recap: what we found in your scheduling workflow'},
+    {id:'disc_assess', name:'Assessment Offer', desc:'Offer a free scheduling maturity assessment', subject:'Free: your {industry} scheduling maturity score'},
+    {id:'disc_stakeholder', name:'Stakeholder Expansion', desc:'Ask to loop in additional decision makers', subject:'Who else at {company} would benefit from this?'},
+    {id:'disc_noshow', name:'No-Show Follow-Up', desc:'Re-engage after a missed discovery call', subject:'We missed you {day} \u2014 still interested, {name}?'},
   ],
   value_prop: [
     {id:'val_90day', name:'90-Day Value', desc:'Highlight time-to-first-value promise', subject:'90 days to measurable scheduling improvement'},
     {id:'val_vendor', name:'Vendor-Agnostic Pitch', desc:'Emphasize unbiased approach', subject:'We don\'t sell software. Here\'s what we do instead.'},
     {id:'val_roi', name:'ROI Calculator', desc:'Frame the business case', subject:'The math behind better scheduling at {company}'},
+    {id:'val_multi', name:'Multi-Plant Scale', desc:'Enterprise-wide scheduling coordination', subject:'One schedule across all {company} plants \u2014 here\'s how'},
+    {id:'val_constraint', name:'Constraint-Based', desc:'Lead with constraint visibility value', subject:'The constraints {company} can\'t see yet'},
+    {id:'val_whatif', name:'What-If Scenarios', desc:'Highlight scenario planning capabilities', subject:'What if {company} could test 10 schedule changes before committing?'},
+    {id:'val_integration', name:'Integration Story', desc:'Emphasize connecting existing systems', subject:'Your ERP + MES + APS \u2014 finally talking to each other'},
   ],
   case_study: [
     {id:'case_similar', name:'Similar Company Win', desc:'Share a result from their industry', subject:'How a {industry} manufacturer cut rework by 40%'},
     {id:'case_multi', name:'Multi-Plant Success', desc:'Reference enterprise-scale implementation', subject:'3 plants, 1 schedule, zero chaos \u2014 here\'s how'},
+    {id:'case_roi', name:'ROI Story', desc:'Lead with hard dollar savings', subject:'$2.3M saved in year one \u2014 here\'s the breakdown'},
+    {id:'case_before_after', name:'Before & After', desc:'Contrast the old vs new scheduling reality', subject:'Before OTE: 40% rework. After: single digits.'},
+    {id:'case_speed', name:'Speed to Value', desc:'Highlight fast implementation timeline', subject:'Live in 67 days \u2014 how {industry} company did it'},
+    {id:'case_quote', name:'Customer Quote', desc:'Lead with a powerful customer testimonial', subject:'\"We stopped firefighting\" \u2014 VP Ops, {industry} manufacturer'},
   ],
   industry_specific: [
-    {id:'ind_auto', name:'Automotive Focus', desc:'OEM/Tier 1 supply chain pain points', subject:'Tier 1 scheduling: when JIT meets reality'},
-    {id:'ind_aero', name:'Aerospace Focus', desc:'Long lead times and compliance', subject:'Scheduling around aerospace certification timelines'},
-    {id:'ind_food', name:'Food & Beverage Focus', desc:'Shelf life and changeover constraints', subject:'When your schedule has an expiration date'},
-    {id:'ind_pharma', name:'Pharma Focus', desc:'Batch scheduling and compliance', subject:'Pharma scheduling: compliance and throughput in one plan'},
+    {id:'ind_auto', name:'Automotive', desc:'OEM/Tier 1 supply chain and JIT scheduling', subject:'Tier 1 scheduling: when JIT meets reality'},
+    {id:'ind_aero', name:'Aerospace & Defense', desc:'Long lead times, compliance, MRO scheduling', subject:'Scheduling around aerospace certification timelines'},
+    {id:'ind_food', name:'Food & Beverage', desc:'Shelf life, changeover, and allergen constraints', subject:'When your schedule has an expiration date'},
+    {id:'ind_pharma', name:'Pharmaceuticals', desc:'Batch scheduling, cleanroom, and compliance', subject:'Pharma scheduling: compliance and throughput in one plan'},
+    {id:'ind_electronics', name:'Electronics & Semiconductors', desc:'High-mix low-volume and yield optimization', subject:'High-mix scheduling without the chaos'},
+    {id:'ind_metal', name:'Metal Fabrication', desc:'Job shop scheduling and machine loading', subject:'Your job shop schedule vs. reality \u2014 bridging the gap'},
+    {id:'ind_medical', name:'Medical Devices', desc:'FDA compliance and traceability in scheduling', subject:'FDA-ready scheduling for {company}'},
+    {id:'ind_plastics', name:'Plastics & Composites', desc:'Mold changeover and material constraints', subject:'Mold scheduling that accounts for real constraints'},
+    {id:'ind_industrial', name:'Industrial Equipment', desc:'Engineer-to-order and project scheduling', subject:'ETO scheduling: from quote to ship floor'},
+    {id:'ind_chem', name:'Chemicals & Process', desc:'Continuous and batch process scheduling', subject:'Process scheduling that respects your chemistry'},
+    {id:'ind_packaging', name:'Packaging', desc:'Line speed, SKU changes, and seasonal demand', subject:'500 SKUs, 12 lines \u2014 your packaging schedule solved'},
+    {id:'ind_energy', name:'Energy & Utilities', desc:'Maintenance scheduling and outage planning', subject:'Outage scheduling that doesn\'t surprise anyone'},
+  ],
+  partner_co_sell: [
+    {id:'ptr_planettogether', name:'PlanetTogether + OTE', desc:'Co-sell with PlanetTogether APS', subject:'PlanetTogether + On Time Edge: better together for {company}'},
+    {id:'ptr_kinaxis', name:'Kinaxis + OTE', desc:'Supply chain + shop floor alignment', subject:'Kinaxis plans it, On Time Edge executes it \u2014 for {company}'},
+    {id:'ptr_fuuz', name:'Fuuz/MFGx + OTE', desc:'MES integration and execution', subject:'Your MES data + real scheduling = no more guessing'},
+    {id:'ptr_boomi', name:'Boomi + OTE', desc:'Integration platform co-sell', subject:'Connect {company}\'s systems in 90 days with Boomi + OTE'},
+    {id:'ptr_generic', name:'Partner Intro', desc:'Generic partner co-sell template', subject:'Two companies, one goal: fix {company}\'s schedule'},
+    {id:'ptr_42q', name:'42Q + OTE', desc:'MES + scheduling for electronics', subject:'42Q + On Time Edge: visibility from plan to pack'},
+  ],
+  executive_outreach: [
+    {id:'exec_coo', name:'COO Direct', desc:'Operational efficiency pitch for COOs', subject:'{name}, a question about {company}\'s scheduling visibility'},
+    {id:'exec_vp_ops', name:'VP Operations', desc:'Day-to-day operational pain for VP Ops', subject:'What your plant managers aren\'t telling you about the schedule'},
+    {id:'exec_cfo', name:'CFO / Finance', desc:'Cost and ROI framing for financial leaders', subject:'The hidden cost of rescheduling at {company}'},
+    {id:'exec_cio', name:'CIO / IT Director', desc:'Technology integration angle', subject:'Your ERP wasn\'t built to schedule \u2014 here\'s what was'},
+    {id:'exec_board', name:'Board-Level Summary', desc:'Strategic summary for board presentation', subject:'One-page: scheduling as a competitive advantage'},
+    {id:'exec_new_role', name:'New Role Congrats', desc:'Congratulate a new exec and introduce OTE', subject:'Congrats on the new role, {name} \u2014 quick thought'},
+  ],
+  nurture_sequence: [
+    {id:'nurture_t1', name:'Touch 1: Problem', desc:'Introduce the core scheduling problem', subject:'The scheduling problem nobody talks about'},
+    {id:'nurture_t2', name:'Touch 2: Data Point', desc:'Share a compelling statistic', subject:'73% of manufacturers replan weekly \u2014 does {company}?'},
+    {id:'nurture_t3', name:'Touch 3: How We Help', desc:'Introduce On Time Edge approach', subject:'How we help {industry} manufacturers like {company}'},
+    {id:'nurture_t4', name:'Touch 4: Social Proof', desc:'Share a customer success story', subject:'What happened when a {industry} company fixed their schedule'},
+    {id:'nurture_t5', name:'Touch 5: Offer', desc:'Make a specific low-friction offer', subject:'20 minutes to see if we can help {company}'},
+    {id:'nurture_t6', name:'Touch 6: Last Chance', desc:'Final touch with value recap', subject:'Last note from me, {name} \u2014 here\'s what you\'d get'},
+  ],
+  re_engagement: [
+    {id:'re_dormant', name:'Dormant Lead', desc:'Re-engage a cold lead after months of silence', subject:'Still thinking about scheduling, {name}?'},
+    {id:'re_lost_deal', name:'Lost Deal Revival', desc:'Circle back on a deal that went cold', subject:'Things have changed since we last spoke, {name}'},
+    {id:'re_product_update', name:'Product Update', desc:'Share new capabilities as reason to reconnect', subject:'New: the feature {company} asked about is live'},
+    {id:'re_industry_news', name:'Industry News Hook', desc:'Use industry news to restart conversation', subject:'Did you see this {industry} scheduling report?'},
+    {id:'re_annual_review', name:'Annual Check-In', desc:'Annual touchpoint with value summary', subject:'Your annual scheduling check-in, {name}'},
+    {id:'re_champion_left', name:'Champion Departed', desc:'Re-engage when your champion left the company', subject:'Continuing the conversation at {company}'},
+  ],
+  webinar: [
+    {id:'web_invite', name:'Webinar Invitation', desc:'Invite to a live scheduling webinar', subject:'Live webinar: {event} \u2014 register now'},
+    {id:'web_reminder', name:'Webinar Reminder', desc:'Day-of reminder for registered attendees', subject:'Starting in 2 hours: {event}'},
+    {id:'web_replay', name:'Webinar Replay', desc:'Share recording with non-attendees', subject:'You missed {event} \u2014 here\'s the replay'},
+    {id:'web_workshop', name:'Workshop Registration', desc:'Hands-on workshop with limited seats', subject:'Only 15 spots: hands-on scheduling workshop'},
+    {id:'web_series', name:'Series Announcement', desc:'Launch a multi-part educational series', subject:'New series: Scheduling Masterclass for {industry} leaders'},
+    {id:'web_post_event', name:'Post-Webinar Offer', desc:'Follow up with attendees who engaged', subject:'You asked a great question at {event}, {name}'},
+  ],
+  referral: [
+    {id:'ref_ask', name:'Referral Request', desc:'Ask a happy customer for introductions', subject:'Know anyone else fighting their schedule, {name}?'},
+    {id:'ref_program', name:'Referral Program', desc:'Introduce formal referral incentive', subject:'Our referral program \u2014 thought of you, {name}'},
+    {id:'ref_intro', name:'Warm Introduction', desc:'Template for the referrer to forward', subject:'{name} suggested I reach out about scheduling'},
+    {id:'ref_testimonial', name:'Testimonial Request', desc:'Ask for a case study or quote', subject:'Would you share your scheduling story, {name}?'},
+    {id:'ref_advocate', name:'Advocate Spotlight', desc:'Feature a customer as a thought leader', subject:'We\'d like to feature {company} in our next piece'},
+    {id:'ref_review', name:'Review Request', desc:'Ask for a G2/Gartner peer review', subject:'Quick favor: 2-minute review of On Time Edge?'},
   ],
   linkedin: [
     {id:'li_connect', name:'Connection Request', desc:'Short note with connection request', subject:''},
     {id:'li_engage', name:'Content Engagement', desc:'Follow up on their post or article', subject:''},
     {id:'li_direct', name:'Direct Message', desc:'Value-first DM after connecting', subject:''},
+    {id:'li_group', name:'Group Discussion', desc:'Engage in a LinkedIn group thread', subject:''},
+    {id:'li_congrats', name:'Job Change Congrats', desc:'Congratulate on new role and introduce OTE', subject:''},
+    {id:'li_article_share', name:'Article Share', desc:'Share OTE content with personalized note', subject:''},
   ],
   text_msg: [
     {id:'txt_reminder', name:'Meeting Reminder', desc:'Quick text reminder before a call', subject:''},
     {id:'txt_followup', name:'Quick Follow-Up', desc:'Brief check-in after meeting', subject:''},
     {id:'txt_event', name:'Event Alert', desc:'Quick event notification', subject:''},
+    {id:'txt_intro', name:'Warm Intro Text', desc:'First text after a referral or warm intro', subject:''},
+    {id:'txt_content', name:'Content Share', desc:'Quick link to relevant content', subject:''},
+    {id:'txt_confirm', name:'Meeting Confirm', desc:'Confirm upcoming meeting details', subject:''},
   ],
   phone_script: [
     {id:'phone_cold', name:'Cold Call Script', desc:'Structured cold call opening', subject:''},
     {id:'phone_warm', name:'Warm Follow-Up Script', desc:'Call script after email engagement', subject:''},
     {id:'phone_disc', name:'Discovery Call Guide', desc:'Questions and flow for discovery', subject:''},
+    {id:'phone_objection', name:'Objection Handler', desc:'Scripts for top 5 common objections', subject:''},
+    {id:'phone_demo_set', name:'Demo Scheduling Call', desc:'Book a demo from an inbound lead', subject:''},
+    {id:'phone_exec', name:'Executive Call Script', desc:'Tailored opener for C-suite cold calls', subject:''},
   ],
 };
 
 const PAIN_POINTS = [
   'Schedule conflicts & changes','Manual coordination overhead','Limited real-time visibility',
   'System integration challenges','Capacity utilization','On-time delivery pressure',
-  'Rush order handling','Quality & compliance tracking'
+  'Rush order handling','Quality & compliance tracking','Multi-plant coordination',
+  'Constraint management','What-if scenario planning','Changeover optimization',
+  'Labor scheduling gaps','Supply chain volatility','ERP/MES disconnect',
+  'Maintenance window conflicts'
 ];
 
 const PRACTICES = {
@@ -284,6 +386,12 @@ const PRACTICES = {
   value_prop: ['Lead with outcomes, not features','Use specific numbers (90 days, 1000+ sites)','Address the "why now" question','Include a low-friction CTA'],
   case_study: ['Match the case to their industry','Lead with the result, not the process','Keep it to one key metric','Offer to share the full story on a call'],
   industry_specific: ['Use industry-specific terminology','Reference their specific constraints','Mention relevant partners or integrations','Show you understand their compliance needs'],
+  partner_co_sell: ['Name both companies in the subject line','Explain the combined value, not just each product','Reference a joint customer win if available','Keep the CTA joint (e.g. "call with both teams")'],
+  executive_outreach: ['Keep under 100 words \u2014 executives skim','Lead with a business outcome, not a feature','Reference their company by name in the first line','Use data points from their industry or public filings'],
+  nurture_sequence: ['Space touches 3-5 business days apart','Each email should stand alone (don\'t assume they read the last)','Vary the format: stat, story, question, offer','Final touch should include a graceful exit'],
+  re_engagement: ['Acknowledge the gap since last contact','Lead with something new (feature, case study, news)','Don\'t guilt-trip \u2014 add value','Make the CTA even lower friction than before'],
+  webinar: ['Include date, time, and duration in the subject or first line','Highlight the specific takeaway, not just the topic','Mention the speaker\'s credibility','Send reminders at 1 week, 1 day, and 2 hours before'],
+  referral: ['Thank them for their own results first','Make the ask specific ("anyone in your network who...")','Provide a forwardable email they can send','Offer to make it easy \u2014 "just reply with their name"'],
   linkedin: ['Keep under 300 characters for connection notes','Reference something specific from their profile','No attachments or links in first message','Be conversational, not formal'],
   text_msg: ['Keep under 160 characters','Use first name only','No links in first text','Include clear next step'],
   phone_script: ['Open with a permission-based question','Have 2-3 discovery questions ready','Prepare for top 3 objections','End with a specific next step, not a vague follow-up'],
@@ -420,7 +528,7 @@ function runGuardrails(text) {
 
   // Length check
   const wordCount = text.split(/\s+/).length;
-  const isEmail = ['event_marketing', 'cold_outreach', 'discovery', 'value_prop', 'case_study', 'industry_specific'].includes(activeCategory);
+  const isEmail = ['event_marketing','cold_outreach','discovery','value_prop','case_study','industry_specific','partner_co_sell','executive_outreach','nurture_sequence','re_engagement','webinar','referral'].includes(activeCategory);
   const isShort = ['linkedin', 'text_msg'].includes(activeCategory);
   if (isShort) {
     checks.push({pass: wordCount <= 100, label: 'Length: ' + wordCount + ' words (target: under 100 for ' + activeCategory.replace('_', ' ') + ')'});
@@ -452,7 +560,7 @@ async function doGenerate() {
     // Update stats
     copiesGenerated++;
     document.getElementById('s-copies').textContent = copiesGenerated;
-    if (['event_marketing','cold_outreach','discovery','value_prop','case_study','industry_specific'].includes(activeCategory)) {
+    if (['event_marketing','cold_outreach','discovery','value_prop','case_study','industry_specific','partner_co_sell','executive_outreach','nurture_sequence','re_engagement','webinar','referral'].includes(activeCategory)) {
       emailsOptimized++;
       document.getElementById('s-emails').textContent = emailsOptimized;
     }
