@@ -246,7 +246,7 @@ const CATEGORIES = [
   {id:'value_prop', name:'Value Proposition', voice:'sugarman'},
   {id:'case_study', name:'Case Study Share', voice:'sugarman'},
   {id:'industry_specific', name:'Industry-Specific', voice:'sugarman'},
-  {id:'partner_co_sell', name:'Partner Co-Sell', voice:'hunt'},
+  {id:'partner_co_sell', name:'Partner Co-Sell', voice:'sugarman'},
   {id:'executive_outreach', name:'Executive Outreach', voice:'hunt'},
   {id:'nurture_sequence', name:'Nurture Sequences', voice:'hunt'},
   {id:'re_engagement', name:'Re-Engagement', voice:'surface'},
@@ -433,7 +433,7 @@ const PRACTICES = {
   case_study_fw: ['Lead with the result, not the company name','Include at least 3 specific metrics (%, $, days, units)','Use direct quotes from the customer \u2014 never paraphrase','Structure: Challenge (what was broken) \u2192 Approach (what we did) \u2192 Result (what changed)','Keep the tone factual and credible \u2014 let the numbers speak','Name the industry, plant type, and scale (# lines, # SKUs, # plants)','End with a clear next step for the reader, not a generic CTA','Avoid superlatives \u2014 say "reduced rework by 38%" not "dramatically improved"'],
   blog_fw: ['Write for the VP Ops or plant director who has 4 minutes to read','Open with a concrete observation or data point, never a question','Every claim needs a number, example, or customer reference behind it','Use short paragraphs (2-3 sentences max) and clear subheads','Tone: direct, knowledgeable, peer-to-peer \u2014 not salesy or academic','Include one OTE-relevant insight but don\'t make the whole post a pitch','End with a practical takeaway the reader can act on today','Target 800-1200 words for standard posts, 400-600 for quick takes'],
   industry_specific: ['Use industry-specific terminology','Reference their specific constraints','Mention relevant partners or integrations','Show you understand their compliance needs'],
-  partner_co_sell: ['Name both companies in the subject line','Lead with the gap neither product fills alone \u2014 then show the combined fix','Reference a joint customer win if available','CTA should be advisory: "worth 15 min to see if this applies to you"'],
+  partner_co_sell: ['Name both companies in the subject line','Explain the combined value, not just each product','Reference a joint customer win if available','Keep the CTA joint (e.g. "call with both teams")'],
   executive_outreach: ['Keep under 100 words \u2014 executives skim','Lead with an uncomfortable truth about their operation','Name the consequence they\u2019re already feeling but haven\u2019t articulated','One insight per message \u2014 leave them smarter even if they don\u2019t reply'],
   nurture_sequence: ['Each touch should teach something new \u2014 never repeat the same angle','Build credibility through specificity: name the plant type, the metric, the constraint','Vary the challenger insight: data point, customer story, diagnostic question, contrarian take','Final touch: summarize what they\u2019d learn in 15 minutes, then graceful exit'],
   re_engagement: ['Acknowledge the gap since last contact','Lead with something new (feature, case study, news)','Don\'t guilt-trip \u2014 add value','Make the CTA even lower friction than before'],
@@ -576,6 +576,9 @@ function buildCopyRequest() {
   else if (['blog_fw'].includes(activeCategory)) assetType = 'sales_one_pager';
   else if (activeCategory === 'event_marketing') assetType = 'email_single';
 
+  const cat = CATEGORIES.find(c => c.id === activeCategory);
+  const voice = cat ? cat.voice : 'sugarman';
+
   return {
     asset_type: assetType,
     offer_name: 'On Time Edge \u2014 ' + (activeTemplate ? activeTemplate.name : 'Marketing Outreach'),
@@ -585,6 +588,7 @@ function buildCopyRequest() {
     proof_points: ['1000+ site implementations across 300+ global companies', '90-day time-to-first-value implementation target'],
     offer_details: context || ('Book a 20-minute walkthrough and we\'ll map ' + company + '\'s constraints to a practical next step.'),
     cta: 'Book a demo',
+    voice: voice,
     provider: 'template'
   };
 }
