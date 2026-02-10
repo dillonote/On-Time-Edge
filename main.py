@@ -9,6 +9,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
 Provider = Literal["template", "ollama", "compatible"]
+BrandVoiceName = Literal["ops_leader", "executive", "technical", "challenger"]
 AssetType = Literal[
     "landing_hero",
     "landing_sections",
@@ -74,6 +75,83 @@ DEFAULT_BRAND_PROFILE: Dict[str, Any] = {
         "ERP",
         "what-if",
     ],
+}
+
+# ----------------------------
+# Brand voices
+# ----------------------------
+BRAND_VOICES: Dict[str, Dict[str, Any]] = {
+    "ops_leader": {
+        "name": "Ops Leader",
+        "description": (
+            "Plainspoken, ops-smart, direct. For plant schedulers and operations managers "
+            "who speak throughput, not buzzwords."
+        ),
+        "tone_override": (
+            "plainspoken, ops-smart, specific — use constraint and throughput language. Zero fluff."
+        ),
+        "style_notes": [
+            "Short declarative sentences. Write like you're briefing the production floor.",
+            "Name the operational pain directly: replanning, firefighting, constraint drift.",
+            "No corporate softening. 'Plans break' beats 'plans may be impacted'.",
+            "Prefer active voice and present tense.",
+        ],
+        "best_for": ["landing_hero", "email_single", "sales_one_pager"],
+    },
+    "executive": {
+        "name": "Executive",
+        "description": (
+            "Board-room ready, ROI-centric, outcome-focused. For C-suite and VP buyers "
+            "who think in quarters and strategic risk."
+        ),
+        "tone_override": (
+            "authoritative, data-driven, strategic — lead with business outcomes and risk. "
+            "Never operational-jargon heavy."
+        ),
+        "style_notes": [
+            "Lead with business outcomes: revenue risk, competitive position, board metrics.",
+            "Use financial framing: time-to-value, capital efficiency, risk reduction.",
+            "Short paragraphs, clear decisions. Executives skim.",
+            "Avoid shop-floor jargon. Say 'delivery reliability' not 'schedule adherence'.",
+        ],
+        "best_for": ["email_single", "email_sequence", "landing_sections"],
+    },
+    "technical": {
+        "name": "Technical",
+        "description": (
+            "Integration-precise, system-aware. For IT directors, architects, and RevOps "
+            "stakeholders managing stack complexity."
+        ),
+        "tone_override": (
+            "precise, credible, system-aware — speak to interoperability, APIs, data flow, "
+            "and implementation reality."
+        ),
+        "style_notes": [
+            "Name real systems (ERP, MES, APS, OEE, Boomi, 42Q) where relevant.",
+            "Address integration complexity head-on — don't paper over it.",
+            "Credibility through specificity: name the methodology (MDIF), timeline (90-day), and scope.",
+            "Anticipate IT objections: security, support ownership, API compatibility.",
+        ],
+        "best_for": ["sales_one_pager", "landing_sections", "email_single"],
+    },
+    "challenger": {
+        "name": "Challenger",
+        "description": (
+            "Provocative, counter-intuitive, attention-grabbing. For thought leadership "
+            "and cold outreach that stops the scroll."
+        ),
+        "tone_override": (
+            "bold, contrarian, curiosity-first — open with a claim that reframes the problem, "
+            "then earn the reader's attention."
+        ),
+        "style_notes": [
+            "Open with a counter-intuitive claim or uncomfortable truth.",
+            "Agitate the gap between what readers believe and what is actually true.",
+            "Use rhetorical questions to create mental engagement.",
+            "Challenge the conventional solution before presenting the real one.",
+        ],
+        "best_for": ["linkedin_post", "email_single", "google_search_ad"],
+    },
 }
 
 
@@ -912,6 +990,7 @@ class OTECopyRequest(BaseModel):
     cta: str = "Book a demo"
     tone: str = "confident, ops-smart, specific"
     length: Literal["short", "medium", "long"] = "medium"
+    brand_voice: BrandVoiceName = "ops_leader"
     banned_terms: List[str] = Field(default_factory=list)
     required_phrases: List[str] = Field(default_factory=list)
     provider: Provider = "template"
@@ -965,6 +1044,7 @@ class VariantRequest(BaseModel):
     offer_details: str = Field(default="Book a 20-minute walkthrough.")
     cta: str = "Book a demo"
     num_variants: int = Field(default=3, ge=2, le=10)
+    brand_voice: BrandVoiceName = "ops_leader"
     provider: Provider = "template"
     model: str = "llama3.1"
     temperature: float = 0.6
@@ -1270,16 +1350,23 @@ def generate_variant_with_opener(
 # ----------------------------
 # LLM prompting
 # ----------------------------
-def build_system_prompt(brand: Dict[str, Any]) -> str:
+def build_system_prompt(
+    brand: Dict[str, Any], voice_name: BrandVoiceName = "ops_leader"
+) -> str:
     identity = brand.get("identity", "")
-    voice = ", ".join(brand.get("voice", []))
     do_not_say = ", ".join(brand.get("do_not_say", [])) or "(none)"
+
+    voice_entry = BRAND_VOICES.get(voice_name, BRAND_VOICES["ops_leader"])
+    voice_section = (
+        f"{voice_entry['tone_override']}\n"
+        + "\n".join(f"- {s}" for s in voice_entry["style_notes"])
+    )
 
     return f"""
 You are a direct-response copywriter writing for {brand["brand_name"]}.
 {identity}
 
-Voice: {voice}
+Voice ({voice_entry['name']}): {voice_section}
 Banned terms: {do_not_say}
 
 === FACTUAL GUARDRAILS (non-negotiable) ===
@@ -1450,7 +1537,7 @@ async def generate_llm(
     req: OTECopyRequest, brand: Dict[str, Any]
 ) -> Tuple[Dict[str, Any], str]:
     messages = [
-        {"role": "system", "content": build_system_prompt(brand)},
+        {"role": "system", "content": build_system_prompt(brand, req.brand_voice)},
         {"role": "user", "content": build_user_prompt(req)},
     ]
     if req.provider == "ollama":
@@ -1471,6 +1558,22 @@ app = FastAPI(title="On Time Edge Copy Bot", version="2.0")
 @app.get("/health")
 async def health():
     return {"status": "ok", "version": "2.0"}
+
+
+@app.get("/voices")
+async def list_voices():
+    return {
+        "count": len(BRAND_VOICES),
+        "voices": [
+            {
+                "id": vid,
+                "name": v["name"],
+                "description": v["description"],
+                "best_for": v["best_for"],
+            }
+            for vid, v in BRAND_VOICES.items()
+        ],
+    }
 
 
 @app.get("/triggers")
@@ -1604,6 +1707,7 @@ async def variants(req: VariantRequest):
                 proof_points=req.proof_points,
                 offer_details=req.offer_details,
                 cta=req.cta,
+                brand_voice=req.brand_voice,
                 provider=req.provider,
                 model=req.model,
                 temperature=req.temperature,
