@@ -189,6 +189,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 </div>
 <div class="fg full"><label>Company Context</label><textarea id="f-context" rows="5" placeholder="Any details about the prospect's situation..."></textarea></div>
 <div class="fg full"><label>Customization / Specific Details</label><textarea id="f-custom" rows="5" placeholder="Additional notes, event name, partner mention, etc."></textarea></div>
+<div class="fg"><label>Provider</label>
+<select id="f-provider">
+<option value="template">Template (instant, free)</option>
+<option value="ollama">Ollama (local LLM)</option>
+<option value="compatible">API (OpenAI-compatible)</option>
+</select>
+</div>
+<div class="fg"><label>Model</label><input id="f-model" value="llama3.1" placeholder="e.g. llama3.1, mistral" /></div>
 </div>
 
 <button class="gen-btn" id="gen-btn" onclick="doGenerate()">
@@ -589,7 +597,8 @@ function buildCopyRequest() {
     offer_details: context || ('Book a 20-minute walkthrough and we\'ll map ' + company + '\'s constraints to a practical next step.'),
     cta: 'Book a demo',
     voice: voice,
-    provider: 'template'
+    provider: document.getElementById('f-provider').value,
+    model: document.getElementById('f-model').value || 'llama3.1'
   };
 }
 
